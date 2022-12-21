@@ -8,32 +8,18 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import org.cadnusdevs.sandroid.jwcongregationasignment.R
+import org.cadnusdevs.sandroid.jwcongregationasignment.shared.BaseFragment
 
 
-class MainFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = MainFragment()
-    }
+class MainFragment : BaseFragment() {
 
     private lateinit var viewModel: MainViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun getTemplate() = R.layout.fragment_main
+    override fun setViewData() {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        // TODO: Use the ViewModel
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        var view = inflater.inflate(R.layout.fragment_main, container, false)
-        setEvents(view);
-        return view
-    }
-
-    private fun setEvents(view: View?) {
+    override fun setEvents(view: View?) {
         val button = view?.findViewById(R.id.new_brother_screen_button) as Button
         button.setOnClickListener{
             requireActivity().supportFragmentManager.beginTransaction()
@@ -41,5 +27,9 @@ class MainFragment : Fragment() {
                 .addToBackStack(null)
                 .commit()
         }
+    }
+
+    companion object {
+        fun newInstance() = MainFragment()
     }
 }
