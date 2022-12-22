@@ -14,7 +14,7 @@ import org.cadnusdevs.sandroid.jwcongregationasignment.ui.shared.BaseFragment
 /**
  * A fragment representing a list of Items.
  */
-class BrotherFragment : BaseFragment() {
+class ListBrotherFragment : BaseFragment() {
     private var columnCount = 1
     private var repository: BrotherRepository = BrotherRepository()
 
@@ -46,14 +46,14 @@ class BrotherFragment : BaseFragment() {
     }
 
     fun onItemClick(brother: Brother) {
-        this.openFragment(NewBrotherFragment.newInstance(brother.name))
+        this.openFragment(EditBrotherFragment.newInstance(brother.name))
     }
 
     companion object {
         const val ARG_COLUMN_COUNT = "column-count"
         @JvmStatic
         fun newInstance() =
-            BrotherFragment().apply {
+            ListBrotherFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_COLUMN_COUNT, 1)
                 }

@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import org.cadnusdevs.sandroid.jwcongregationasignment.R
+
 
 abstract class BaseFragment : Fragment(){
 
@@ -67,5 +69,12 @@ abstract class BaseFragment : Fragment(){
 
     fun setBool(id: Int, value: Boolean) {
         this._view?.findViewById<CheckBox>(id)?.isChecked = value
+    }
+
+    fun showToast(message: String) {
+        Toast.makeText(
+            activity, message,
+            Toast.LENGTH_LONG
+        ).show()
     }
 }

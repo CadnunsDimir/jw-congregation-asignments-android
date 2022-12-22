@@ -7,7 +7,7 @@ import org.cadnusdevs.sandroid.jwcongregationasignment.models.Brother
 import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.BrotherRepository
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.shared.BaseFragment
 
-class NewBrotherFragment : BaseFragment() {
+class EditBrotherFragment : BaseFragment() {
     private var enabledEditMode: Boolean = false
     private var repository: BrotherRepository = BrotherRepository()
     private var brotherName: String? = null
@@ -46,18 +46,21 @@ class NewBrotherFragment : BaseFragment() {
                 this.checkBoxValue(R.id.checkBoxComputer),
                 this.checkBoxValue(R.id.checkBoxSoundSystem)
             )
-            if(this.enabledEditMode) {
-                repository.update(brother)
-            }else{
-                repository.insert(brother)
+            if(brother.satisfyRules()) {
+                if(this.enabledEditMode) {
+                    repository.update(brother)
+                }else{
+                    repository.insert(brother)
+                }
+                this.back()
             }
-            this.back()
+            this.showToast(BROTHER_ERROR_MSG);
         }
     }
 
     companion object {
         fun newInstance(brotherName: String? = null) =
-            NewBrotherFragment().apply {
+            EditBrotherFragment().apply {
                 arguments = Bundle().apply {
                     putString(UNIQUE_BROTHER_NAME_KEY, brotherName)
                 }

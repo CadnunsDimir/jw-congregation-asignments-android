@@ -6,4 +6,8 @@ class Brother(
     var canBeMicrophone: Boolean,
     var canBeComputer: Boolean,
     var canBeSoundSystem: Boolean,
-)
+) {
+    fun satisfyRules(): Boolean {
+        return name.length >= 3 && (canBeUsher || canBeMicrophone || canBeComputer || canBeSoundSystem)
+    }
+}
