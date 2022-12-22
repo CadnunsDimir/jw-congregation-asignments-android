@@ -64,4 +64,12 @@ abstract class BaseFragment : Fragment(){
     fun setText(id: Int, text: String) {
         this._view?.findViewById<TextView>(id)?.text = text
     }
+
+    fun makeReadOnly(id: Int) {
+        this._view?.findViewById<View>(id)?.isEnabled = false
+    }
+
+    fun setBool(id: Int, value: Boolean) {
+        this._view?.findViewById<CheckBox>(id)?.isChecked = value
+    }
 }

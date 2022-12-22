@@ -20,7 +20,7 @@ class MainFragment : BaseFragment() {
     }
     override fun setEvents() {
         this.onClick (R.id.new_brother_screen_button) {
-            this.openFragment(NewBrotherFragment.newInstance("atr1", "atr2"))
+            this.openFragment(NewBrotherFragment.newInstance())
         }
 
         this.onClick (R.id.list_brother_screen_button) {
