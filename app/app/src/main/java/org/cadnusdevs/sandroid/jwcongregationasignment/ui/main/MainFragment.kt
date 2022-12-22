@@ -19,13 +19,9 @@ class MainFragment : BaseFragment() {
     override fun setViewData() {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
     }
-    override fun setEvents(view: View?) {
-        val button = view?.findViewById(R.id.new_brother_screen_button) as Button
-        button.setOnClickListener{
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.container, NewBrotherFragment.newInstance("atr1", "atr2"))
-                .addToBackStack(null)
-                .commit()
+    override fun setEvents() {
+        this.onClick (R.id.new_brother_screen_button) {
+            this.openFragment(NewBrotherFragment.newInstance("atr1", "atr2"))
         }
     }
 

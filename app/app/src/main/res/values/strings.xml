@@ -3,4 +3,11 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="new_brother_screen_button_text">cadastrar novo irmão</string>
+    <string name="brother_name_label_ptbr">Nome do Irmão</string>
+    <string name="privileges_text_PtBR">Privilégios</string>
+    <string name="usher_text_PtBR">Indicador</string>
+    <string name="computer_text_PtBR">Computador</string>
+    <string name="sound_system_PtBR">Som</string>
+    <string name="microphone_text_PtBR">Microfone</string>
+    <string name="save_text_PtBR">Salvar</string>
 </resources>

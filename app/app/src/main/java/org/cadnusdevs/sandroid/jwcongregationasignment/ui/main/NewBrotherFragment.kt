@@ -5,6 +5,7 @@ import android.view.View
 import org.cadnusdevs.sandroid.jwcongregationasignment.ARG_PARAM1
 import org.cadnusdevs.sandroid.jwcongregationasignment.ARG_PARAM2
 import org.cadnusdevs.sandroid.jwcongregationasignment.R
+import org.cadnusdevs.sandroid.jwcongregationasignment.models.Brother
 import org.cadnusdevs.sandroid.jwcongregationasignment.shared.BaseFragment
 
 class NewBrotherFragment : BaseFragment() {
@@ -18,8 +19,14 @@ class NewBrotherFragment : BaseFragment() {
         }
     }
 
-    override fun setEvents(view: View?) {
-
+    override fun setEvents() {
+        this.onClick(R.id.buttonSave) {
+            var brother = Brother()
+            brother.name = this.getEditTextValue(R.id.editTextBrotherName)
+            brother.canBeUsher = this.checkBoxValue(R.id.checkBoxUsher)
+//            this.setText(R.id.textView, "Nome do irmão: ${brother.name}, Indicador: ${brother.canBeUsher}")
+            this.back()
+        }
     }
 
     companion object {
