@@ -1,10 +1,10 @@
 package org.cadnusdevs.sandroid.jwcongregationasignment.ui.main
 
 import android.os.Bundle
-import android.view.View
 import org.cadnusdevs.sandroid.jwcongregationasignment.ARG_PARAM1
 import org.cadnusdevs.sandroid.jwcongregationasignment.ARG_PARAM2
 import org.cadnusdevs.sandroid.jwcongregationasignment.R
+import org.cadnusdevs.sandroid.jwcongregationasignment.db
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.Brother
 import org.cadnusdevs.sandroid.jwcongregationasignment.shared.BaseFragment
 
@@ -21,10 +21,14 @@ class NewBrotherFragment : BaseFragment() {
 
     override fun setEvents() {
         this.onClick(R.id.buttonSave) {
-            var brother = Brother()
-            brother.name = this.getEditTextValue(R.id.editTextBrotherName)
-            brother.canBeUsher = this.checkBoxValue(R.id.checkBoxUsher)
-//            this.setText(R.id.textView, "Nome do irmão: ${brother.name}, Indicador: ${brother.canBeUsher}")
+            var brother = Brother(
+                this.getEditTextValue(R.id.editTextBrotherName),
+                this.checkBoxValue(R.id.checkBoxUsher),
+                this.checkBoxValue(R.id.checkBoxMicrophone),
+                this.checkBoxValue(R.id.checkBoxComputer),
+                this.checkBoxValue(R.id.checkBoxSoundSystem)
+            )
+            db.brothers.add(brother)
             this.back()
         }
     }

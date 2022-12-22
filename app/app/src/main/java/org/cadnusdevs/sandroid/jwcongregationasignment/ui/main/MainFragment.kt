@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import org.cadnusdevs.sandroid.jwcongregationasignment.BrotherFragment
 import org.cadnusdevs.sandroid.jwcongregationasignment.R
 import org.cadnusdevs.sandroid.jwcongregationasignment.shared.BaseFragment
 
@@ -22,6 +23,10 @@ class MainFragment : BaseFragment() {
     override fun setEvents() {
         this.onClick (R.id.new_brother_screen_button) {
             this.openFragment(NewBrotherFragment.newInstance("atr1", "atr2"))
+        }
+
+        this.onClick (R.id.list_brother_screen_button) {
+            this.openFragment(BrotherFragment.newInstance(1))
         }
     }
 
