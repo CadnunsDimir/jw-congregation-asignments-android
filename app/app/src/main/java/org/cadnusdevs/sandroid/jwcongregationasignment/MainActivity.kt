@@ -2,7 +2,7 @@ package org.cadnusdevs.sandroid.jwcongregationasignment
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import org.cadnusdevs.sandroid.jwcongregationasignment.ui.main.MainFragment
+import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.MainFragment
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

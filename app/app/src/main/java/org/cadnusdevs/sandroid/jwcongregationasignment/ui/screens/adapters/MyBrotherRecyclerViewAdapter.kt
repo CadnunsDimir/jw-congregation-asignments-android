@@ -1,12 +1,9 @@
-package org.cadnusdevs.sandroid.jwcongregationasignment
+package org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.adapters
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-
-import org.cadnusdevs.sandroid.jwcongregationasignment.placeholder.PlaceholderContent.PlaceholderItem
+import androidx.recyclerview.widget.RecyclerView
 import org.cadnusdevs.sandroid.jwcongregationasignment.databinding.FragmentItemBinding
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.Brother
 

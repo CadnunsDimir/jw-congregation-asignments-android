@@ -1,4 +1,4 @@
-package org.cadnusdevs.sandroid.jwcongregationasignment.ui.main
+package org.cadnusdevs.sandroid.jwcongregationasignment.models
 
 import androidx.lifecycle.ViewModel
 

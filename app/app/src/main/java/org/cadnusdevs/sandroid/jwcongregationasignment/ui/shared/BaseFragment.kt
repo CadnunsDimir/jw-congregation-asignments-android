@@ -1,17 +1,14 @@
-package org.cadnusdevs.sandroid.jwcongregationasignment.shared
+package org.cadnusdevs.sandroid.jwcongregationasignment.ui.shared
 
 import android.os.Bundle
-import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import org.cadnusdevs.sandroid.jwcongregationasignment.R
-import org.cadnusdevs.sandroid.jwcongregationasignment.ui.main.NewBrotherFragment
 
 abstract class BaseFragment : Fragment(){
 
@@ -27,10 +24,14 @@ abstract class BaseFragment : Fragment(){
         savedInstanceState: Bundle?
     ): View? {
         this._view = inflater.inflate(this.getTemplate(), container, false)
+        configureLayoutManager(this._view)
         setEvents()
         return this._view
-
     }
+
+
+
+    fun getInflatedView() = this._view
 
     fun onClick(componentId: Int, action: View.OnClickListener) {
         val button = _view?.findViewById(componentId) as View
@@ -49,6 +50,7 @@ abstract class BaseFragment : Fragment(){
     }
 
     abstract fun getTemplate(): Int
+    abstract fun configureLayoutManager(view: View?)
     abstract fun setViewData()
     abstract fun setEvents()
     fun getEditTextValue(componentId: Int): String {
