@@ -43,7 +43,7 @@ abstract class BaseFragment : Fragment(){
             .commit()
     }
 
-    fun back() {
+    fun goBack() {
         requireActivity().supportFragmentManager.popBackStack()
     }
 
@@ -51,24 +51,27 @@ abstract class BaseFragment : Fragment(){
     abstract fun configureLayoutManager(view: View?)
     abstract fun setViewData()
     abstract fun setEvents()
+
+    private fun <T> find(id: Int): T? { return this._view?.findViewById(id) }
+
     fun getEditTextValue(componentId: Int): String {
-        return this._view?.findViewById<EditText>(componentId)?.text.toString()
+        return find<EditText>(componentId)?.text.toString()
     }
 
     fun checkBoxValue(id: Int): Boolean {
-        return this._view?.findViewById<CheckBox>(id)?.isChecked?: false
+        return find<CheckBox>(id)?.isChecked?: false
     }
 
     fun setText(id: Int, text: String) {
-        this._view?.findViewById<TextView>(id)?.text = text
+        find<TextView>(id)?.text = text
     }
 
     fun makeReadOnly(id: Int) {
-        this._view?.findViewById<View>(id)?.isEnabled = false
+        find<View>(id)?.isEnabled = false
     }
 
     fun setBool(id: Int, value: Boolean) {
-        this._view?.findViewById<CheckBox>(id)?.isChecked = value
+        find<CheckBox>(id)?.isChecked = value
     }
 
     fun showToast(message: String) {

@@ -35,7 +35,7 @@ class EditBrotherFragment : BaseFragment() {
         var brother = repository.select { x-> x.name == brotherName }
         enabledEditMode = brother != null
         if(brother != null) {
-            this.fillFormFields(brother);
+            this.fillFormFields(brother)
         }
 
         this.onClick(R.id.buttonSave) {
@@ -44,17 +44,17 @@ class EditBrotherFragment : BaseFragment() {
                 this.checkBoxValue(R.id.checkBoxUsher),
                 this.checkBoxValue(R.id.checkBoxMicrophone),
                 this.checkBoxValue(R.id.checkBoxComputer),
-                this.checkBoxValue(R.id.checkBoxSoundSystem)
-            )
+                this.checkBoxValue(R.id.checkBoxSoundSystem))
+
             if(brother.satisfyRules()) {
                 if(this.enabledEditMode) {
                     repository.update(brother)
                 }else{
                     repository.insert(brother)
                 }
-                this.back()
+                this.goBack()
             }
-            this.showToast(BROTHER_ERROR_MSG);
+            this.showToast(BROTHER_ERROR_MSG)
         }
     }
 
