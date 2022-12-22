@@ -29,10 +29,6 @@ abstract class BaseFragment : Fragment(){
         return this._view
     }
 
-
-
-    fun getInflatedView() = this._view
-
     fun onClick(componentId: Int, action: View.OnClickListener) {
         val button = _view?.findViewById(componentId) as View
         button.setOnClickListener(action)

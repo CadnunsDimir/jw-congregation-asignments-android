@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.adapters.MyBrotherRecyclerViewAdapter
 import org.cadnusdevs.sandroid.jwcongregationasignment.R
+import org.cadnusdevs.sandroid.jwcongregationasignment.models.Brother
 import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.BrotherRepository
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.shared.BaseFragment
 
@@ -20,13 +21,18 @@ class BrotherFragment : BaseFragment() {
     override fun getTemplate() = R.layout.fragment_item_list
     override fun configureLayoutManager(view: View?) {
         var repository = this.repository
+        var fragment = this;
         if (view is RecyclerView) {
             with(view) {
                 layoutManager = when {
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
                 }
-                adapter = MyBrotherRecyclerViewAdapter(repository.selectAll())
+                var brotherAdapter = MyBrotherRecyclerViewAdapter(repository.selectAll())
+                brotherAdapter.defineItemClickBehavior{
+                    fragment.onItemClick(it)
+                }
+                adapter = brotherAdapter
             }
         }
     }
@@ -37,7 +43,10 @@ class BrotherFragment : BaseFragment() {
     }
 
     override fun setEvents(){
+    }
 
+    fun onItemClick(brother: Brother) {
+        this.openFragment(NewBrotherFragment.newInstance(brother.name))
     }
 
     companion object {

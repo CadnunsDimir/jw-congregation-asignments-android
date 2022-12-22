@@ -20,11 +20,6 @@ class NewBrotherFragment : BaseFragment() {
         arguments?.let {
             brotherName = it.getString(UNIQUE_BROTHER_NAME_KEY)
         }
-        var brother = repository.select { x-> x.name == brotherName }
-        enabledEditMode = brother != null
-        if(brother != null) {
-            this.fillFormFields(brother);
-        }
     }
 
     private fun fillFormFields(brother: Brother) {
@@ -37,6 +32,12 @@ class NewBrotherFragment : BaseFragment() {
     }
 
     override fun setEvents() {
+        var brother = repository.select { x-> x.name == brotherName }
+        enabledEditMode = brother != null
+        if(brother != null) {
+            this.fillFormFields(brother);
+        }
+
         this.onClick(R.id.buttonSave) {
             var brother = Brother(
                 this.getEditTextValue(R.id.editTextBrotherName),

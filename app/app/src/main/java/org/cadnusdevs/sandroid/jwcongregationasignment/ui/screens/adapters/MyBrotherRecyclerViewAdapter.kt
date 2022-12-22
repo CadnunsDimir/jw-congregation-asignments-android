@@ -15,6 +15,8 @@ class MyBrotherRecyclerViewAdapter(
     private val values: List<Brother>
 ) : RecyclerView.Adapter<MyBrotherRecyclerViewAdapter.ViewHolder>() {
 
+    private lateinit var onItemClickBehavior: (Brother) -> Unit
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         return ViewHolder(
@@ -24,7 +26,6 @@ class MyBrotherRecyclerViewAdapter(
                 false
             )
         )
-
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -36,9 +37,21 @@ class MyBrotherRecyclerViewAdapter(
             .append(if(item.canBeComputer)  "PC " else "")
             .append(if(item.canBeSoundSystem)  "Som " else "")
             .toString()
+
+        holder.contentView.setOnClickListener {
+            this.onItemClickBehavior?.invoke(item)
+        }
+
+        holder.idView.setOnClickListener{
+            this.onItemClickBehavior?.invoke(item)
+        }
     }
 
     override fun getItemCount(): Int = values.size
+
+    fun defineItemClickBehavior(event: (Brother)-> Unit) {
+        this.onItemClickBehavior = event
+    }
 
     inner class ViewHolder(binding: FragmentItemBinding) : RecyclerView.ViewHolder(binding.root) {
         val idView: TextView = binding.itemNumber
