@@ -9,16 +9,17 @@ import org.cadnusdevs.sandroid.jwcongregationasignment.ui.shared.BaseFragment
 
 class EditBrotherFragment : BaseFragment() {
     private var enabledEditMode: Boolean = false
-    private var repository: BrotherRepository = BrotherRepository()
-    private var brotherName: String? = null
+    private lateinit var repository: BrotherRepository
+    private var brotherId: Long? = null
 
     override fun getTemplate() = R.layout.fragment_new_brother
     override fun configureLayoutManager(view: View?) {
+        this.repository = BrotherRepository(requireActivity())
     }
 
     override fun setViewData() {
         arguments?.let {
-            brotherName = it.getString(UNIQUE_BROTHER_NAME_KEY)
+            brotherId = it.getLong(UNIQUE_BROTHER_KEY)
         }
     }
 
@@ -32,7 +33,7 @@ class EditBrotherFragment : BaseFragment() {
     }
 
     override fun setEvents() {
-        var brother = repository.select { x-> x.name == brotherName }
+        var brother = repository.select { x-> x.id == brotherId }
         enabledEditMode = brother != null
         if(brother != null) {
             this.fillFormFields(brother)
@@ -40,6 +41,7 @@ class EditBrotherFragment : BaseFragment() {
 
         this.onClick(R.id.buttonSave) {
             var brother = Brother(
+                this.brotherId?:0,
                 this.getEditTextValue(R.id.editTextBrotherName),
                 this.checkBoxValue(R.id.checkBoxUsher),
                 this.checkBoxValue(R.id.checkBoxMicrophone),
@@ -53,16 +55,15 @@ class EditBrotherFragment : BaseFragment() {
                     repository.insert(brother)
                 }
                 this.goBack()
-            }
-            this.showToast(BROTHER_ERROR_MSG)
+            } else this.showToast(BROTHER_ERROR_MSG)
         }
     }
 
     companion object {
-        fun newInstance(brotherName: String? = null) =
+        fun newInstance(brother: Brother? = null) =
             EditBrotherFragment().apply {
                 arguments = Bundle().apply {
-                    putString(UNIQUE_BROTHER_NAME_KEY, brotherName)
+                    putLong(UNIQUE_BROTHER_KEY, brother?.id?:0)
                 }
             }
     }

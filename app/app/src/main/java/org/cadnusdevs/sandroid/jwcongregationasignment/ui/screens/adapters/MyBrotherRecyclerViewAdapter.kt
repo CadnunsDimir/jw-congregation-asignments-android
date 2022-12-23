@@ -30,7 +30,7 @@ class MyBrotherRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
-        holder.idView.text = "${item.name}: "
+        holder.idView.text = "${item.id}. ${item.name}: "
         holder.contentView.text = StringBuilder()
             .append(if(item.canBeUsher)  "Indicador " else "")
             .append(if(item.canBeMicrophone)  "Microfone " else "")

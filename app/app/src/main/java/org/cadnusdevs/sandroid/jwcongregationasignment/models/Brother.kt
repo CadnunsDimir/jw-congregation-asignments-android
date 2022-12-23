@@ -1,6 +1,7 @@
 package org.cadnusdevs.sandroid.jwcongregationasignment.models
 
 class Brother(
+    var id: Long,
     var name: String,
     var canBeUsher: Boolean,
     var canBeMicrophone: Boolean,

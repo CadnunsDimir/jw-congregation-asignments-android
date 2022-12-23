@@ -16,10 +16,11 @@ import org.cadnusdevs.sandroid.jwcongregationasignment.ui.shared.BaseFragment
  */
 class ListBrotherFragment : BaseFragment() {
     private var columnCount = 1
-    private var repository: BrotherRepository = BrotherRepository()
+    private lateinit var repository: BrotherRepository
 
     override fun getTemplate() = R.layout.fragment_item_list
     override fun configureLayoutManager(view: View?) {
+        this.repository = BrotherRepository(requireActivity())
         var repository = this.repository
         var fragment = this;
         if (view is RecyclerView) {
@@ -46,7 +47,7 @@ class ListBrotherFragment : BaseFragment() {
     }
 
     fun onItemClick(brother: Brother) {
-        this.openFragment(EditBrotherFragment.newInstance(brother.name))
+        this.openFragment(EditBrotherFragment.newInstance(brother))
     }
 
     companion object {
