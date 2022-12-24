@@ -65,7 +65,7 @@ class BrotherRepository (ctx: Context){
             brotherEntry.COLUMN_SOUND_SYSTEM)
 
         // How you want the results sorted in the resulting Cursor
-        val sortOrder = "${brotherEntry.COLUMN_NAME} DESC"
+        val sortOrder = "${brotherEntry.COLUMN_NAME} ASC"
 
         val cursor = db.query(
             brotherEntry.TABLE_NAME,   // The table to query

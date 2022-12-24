@@ -13,7 +13,7 @@ class EditBrotherFragment : BaseFragment() {
     private var brotherId: Long? = null
 
     override fun getTemplate() = R.layout.fragment_new_brother
-    override fun configureLayoutManager(view: View?) {
+    override fun configureLayout(view: View?) {
         this.repository = BrotherRepository(requireActivity())
     }
 
@@ -24,12 +24,12 @@ class EditBrotherFragment : BaseFragment() {
     }
 
     private fun fillFormFields(brother: Brother) {
-        this.makeReadOnly(R.id.editTextBrotherName)
-        this.setText(R.id.editTextBrotherName, brother.name)
-        this.setBool(R.id.checkBoxUsher, brother.canBeUsher)
-        this.setBool(R.id.checkBoxMicrophone, brother.canBeMicrophone)
-        this.setBool(R.id.checkBoxComputer, brother.canBeComputer)
-        this.setBool(R.id.checkBoxSoundSystem, brother.canBeSoundSystem)
+        this.q.makeReadOnly(R.id.editTextBrotherName)
+        this.q.setText(R.id.editTextBrotherName, brother.name)
+        this.q.setBool(R.id.checkBoxUsher, brother.canBeUsher)
+        this.q.setBool(R.id.checkBoxMicrophone, brother.canBeMicrophone)
+        this.q.setBool(R.id.checkBoxComputer, brother.canBeComputer)
+        this.q.setBool(R.id.checkBoxSoundSystem, brother.canBeSoundSystem)
     }
 
     override fun setEvents() {
@@ -39,14 +39,14 @@ class EditBrotherFragment : BaseFragment() {
             this.fillFormFields(brother)
         }
 
-        this.onClick(R.id.buttonSave) {
+        this.q.onClick(R.id.buttonSave) {
             var brother = Brother(
                 this.brotherId?:0,
-                this.getEditTextValue(R.id.editTextBrotherName),
-                this.checkBoxValue(R.id.checkBoxUsher),
-                this.checkBoxValue(R.id.checkBoxMicrophone),
-                this.checkBoxValue(R.id.checkBoxComputer),
-                this.checkBoxValue(R.id.checkBoxSoundSystem))
+                this.q.getEditTextValue(R.id.editTextBrotherName),
+                this.q.checkBoxValue(R.id.checkBoxUsher),
+                this.q.checkBoxValue(R.id.checkBoxMicrophone),
+                this.q.checkBoxValue(R.id.checkBoxComputer),
+                this.q.checkBoxValue(R.id.checkBoxSoundSystem))
 
             if(brother.satisfyRules()) {
                 if(this.enabledEditMode) {

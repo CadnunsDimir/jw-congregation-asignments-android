@@ -19,7 +19,7 @@ class ListBrotherFragment : BaseFragment() {
     private lateinit var repository: BrotherRepository
 
     override fun getTemplate() = R.layout.fragment_item_list
-    override fun configureLayoutManager(view: View?) {
+    override fun configureLayout(view: View?) {
         this.repository = BrotherRepository(requireActivity())
         var repository = this.repository
         var fragment = this;

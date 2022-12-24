@@ -10,11 +10,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import org.cadnusdevs.sandroid.jwcongregationasignment.R
+import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.QueryViews
 
 
 abstract class BaseFragment : Fragment(){
-
-    private var _view: View? = null;
+    lateinit var q: QueryViews
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,15 +25,11 @@ abstract class BaseFragment : Fragment(){
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        this._view = inflater.inflate(this.getTemplate(), container, false)
-        configureLayoutManager(this._view)
+        var view = inflater.inflate(this.getTemplate(), container, false)
+        q = QueryViews(view)
+        configureLayout(view)
         setEvents()
-        return this._view
-    }
-
-    fun onClick(componentId: Int, action: View.OnClickListener) {
-        val button = _view?.findViewById(componentId) as View
-        button.setOnClickListener(action)
+        return view
     }
 
     fun openFragment(fragment: Fragment) {
@@ -48,31 +44,9 @@ abstract class BaseFragment : Fragment(){
     }
 
     abstract fun getTemplate(): Int
-    abstract fun configureLayoutManager(view: View?)
+    abstract fun configureLayout(view: View?)
     abstract fun setViewData()
     abstract fun setEvents()
-
-    private fun <T> find(id: Int): T? { return this._view?.findViewById(id) }
-
-    fun getEditTextValue(componentId: Int): String {
-        return find<EditText>(componentId)?.text.toString()
-    }
-
-    fun checkBoxValue(id: Int): Boolean {
-        return find<CheckBox>(id)?.isChecked?: false
-    }
-
-    fun setText(id: Int, text: String) {
-        find<TextView>(id)?.text = text
-    }
-
-    fun makeReadOnly(id: Int) {
-        find<View>(id)?.isEnabled = false
-    }
-
-    fun setBool(id: Int, value: Boolean) {
-        find<CheckBox>(id)?.isChecked = value
-    }
 
     fun showToast(message: String) {
         Toast.makeText(

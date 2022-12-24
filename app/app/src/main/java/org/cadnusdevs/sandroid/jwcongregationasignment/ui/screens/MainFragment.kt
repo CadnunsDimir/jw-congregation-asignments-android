@@ -12,19 +12,22 @@ class MainFragment : BaseFragment() {
     private lateinit var viewModel: MainViewModel
 
     override fun getTemplate() = R.layout.fragment_main
-    override fun configureLayoutManager(view: View?) {
+    override fun configureLayout(view: View?) {
     }
 
     override fun setViewData() {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
     }
     override fun setEvents() {
-        this.onClick (R.id.new_brother_screen_button) {
+        this.q.onClick (R.id.new_brother_screen_button) {
             this.openFragment(EditBrotherFragment.newInstance())
         }
 
-        this.onClick (R.id.list_brother_screen_button) {
+        this.q.onClick (R.id.list_brother_screen_button) {
             this.openFragment(ListBrotherFragment.newInstance())
+        }
+        this.q.onClick (R.id.asigment_screen_button) {
+            this.openFragment(EditAssignmentsFragment())
         }
     }
 
