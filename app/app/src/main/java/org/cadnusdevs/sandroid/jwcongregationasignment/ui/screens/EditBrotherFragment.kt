@@ -2,6 +2,7 @@ package org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import org.cadnusdevs.sandroid.jwcongregationasignment.*
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.Brother
 import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.BrotherRepository
@@ -12,7 +13,7 @@ class EditBrotherFragment : BaseFragment() {
     private lateinit var repository: BrotherRepository
     private var brotherId: Long? = null
 
-    override fun getTemplate() = R.layout.fragment_new_brother
+    override fun getTemplate() = R.layout.fragment_edit_brother
     override fun configureLayout(view: View?) {
         this.repository = BrotherRepository(requireActivity())
     }
@@ -35,10 +36,26 @@ class EditBrotherFragment : BaseFragment() {
     override fun setEvents() {
         var brother = repository.select { x-> x.id == brotherId }
         enabledEditMode = brother != null
+        q.find<Button>(R.id.delete_brother_button)?.visibility = if(enabledEditMode) View.VISIBLE else View.GONE
+
         if(brother != null) {
             this.fillFormFields(brother)
         }
 
+        setSaveButtonEvents()
+        setDeleteButtonEvents()
+    }
+
+    private fun setDeleteButtonEvents() {
+        this.q.onClick(R.id.delete_brother_button) {
+            val brother = repository.select { x-> x.id == brotherId }
+            brother?.let { it1 -> repository.delete(it1) }
+            this.goBack()
+        }
+        q.showIf(R.id.delete_brother_button, enabledEditMode)
+    }
+
+    private fun setSaveButtonEvents() {
         this.q.onClick(R.id.buttonSave) {
             var brother = Brother(
                 this.brotherId?:0,

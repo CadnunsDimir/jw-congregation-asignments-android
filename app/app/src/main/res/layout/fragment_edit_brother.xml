@@ -92,4 +92,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/delete_brother_button"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:text="remover"
+        app:layout_constraintBottom_toTopOf="@+id/buttonSave"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"></Button>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

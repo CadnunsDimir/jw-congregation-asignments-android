@@ -46,7 +46,11 @@ class BrotherRepository (ctx: Context){
     }
 
     fun delete(brother: Brother) {
-        dbMock.brothers.remove(this.select { x -> x.name == brother.name })
+//        dbMock.brothers.remove(this.select { x -> x.name == brother.name })
+        val db = dbHelper.writableDatabase
+        val selection = "${BaseColumns._ID} LIKE ?"
+        val selectionArgs = arrayOf(brother.id.toString())
+        db.delete(brotherEntry.TABLE_NAME, selection, selectionArgs);
     }
 
     fun selectAll(): List<Brother> {

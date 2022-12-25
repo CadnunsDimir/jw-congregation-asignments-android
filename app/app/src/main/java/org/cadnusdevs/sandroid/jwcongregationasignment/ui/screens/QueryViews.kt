@@ -2,11 +2,7 @@ package org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens
 
 import android.app.Activity
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.CheckBox
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.SpinnerItem
 
 class QueryViews(private var _view: View) {
@@ -40,5 +36,9 @@ class QueryViews(private var _view: View) {
         val adapter = ArrayAdapter(activity, android.R.layout.simple_spinner_item, SpinnerItem.list(items, toStringResolver))
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
+    }
+
+    fun showIf(id: Int, value: Boolean) {
+        find<View>(id)?.visibility = if(value) View.VISIBLE else View.GONE
     }
 }
