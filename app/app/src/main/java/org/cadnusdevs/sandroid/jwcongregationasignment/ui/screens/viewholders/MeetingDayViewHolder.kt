@@ -22,8 +22,8 @@ class MeetingDayViewHolder private constructor(
 
     var brothers: List<Brother> = ArrayList()
         set(value) {
-            fillAllSpinners()
             field = value
+            fillAllSpinners()
         }
 
     private fun fillAllSpinners() {

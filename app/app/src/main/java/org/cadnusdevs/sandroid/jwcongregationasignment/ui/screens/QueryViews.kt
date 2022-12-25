@@ -7,6 +7,7 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
+import org.cadnusdevs.sandroid.jwcongregationasignment.models.SpinnerItem
 
 class QueryViews(private var _view: View) {
     fun <T> find(id: Int): T? { return this._view?.findViewById(id) }
@@ -36,7 +37,7 @@ class QueryViews(private var _view: View) {
     }
 
     fun  <T> setSpinnerItems(activity: Activity, spinner:Spinner, items: List<T>, toStringResolver: (item: T)-> String) {
-        val adapter = ArrayAdapter(activity, android.R.layout.simple_spinner_item, items)
+        val adapter = ArrayAdapter(activity, android.R.layout.simple_spinner_item, SpinnerItem.list(items, toStringResolver))
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
     }

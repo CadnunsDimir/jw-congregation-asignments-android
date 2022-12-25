@@ -10,9 +10,9 @@ class MeetingDay(day: Int?, month: Int?,
                  ) {
 
     companion object {
-        fun generateDefaultList() : ArrayList<MeetingDay>{
+        fun generateDefaultList(days: Int) : ArrayList<MeetingDay>{
             var sheet = ArrayList<MeetingDay>()
-            for(i in 1..5) {
+            for(i in 1..days) {
                 sheet.add(MeetingDay(null,null,null,null,null,null,null,null))
             }
             return sheet;
