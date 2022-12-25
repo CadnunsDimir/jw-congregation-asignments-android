@@ -1,26 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    layout_behavior="@string/appbar_scrolling_view_behavior"
-    android:fillViewport="true"
-    tools:context=".ui.screens.EditAssignmentsFragment">
-    <LinearLayout
+    tools:context=".ui.screens.EditAssignmentsFragment"
+    android:orientation="vertical">
+
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:padding="10dp"
+        android:text="Designações do Mês de Janeiro/2023" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Designações do Mês de Janeiro/2023" />
+    <ListView
+        android:id="@+id/meetings_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-        <ListView
-            android:id="@+id/meetings_list_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-
-</androidx.core.widget.NestedScrollView>
+</LinearLayout>
