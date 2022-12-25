@@ -2,83 +2,93 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="15dp"
     >
-
-    <EditText
-        android:id="@+id/editTextMeetingDate"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/form_views_height"
-        android:ems="10"
-        android:inputType="date" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/ushers_PtBR" />
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/form_views_height"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:layout_margin="10dp"
+        android:layout_marginBottom="20dp"
+        android:background="@color/background_list_item"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/editTextMeetingDate"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/form_views_height"
+            android:ems="10"
+            android:inputType="date" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ushers_PtBR" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/form_views_height"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/spinnerUsherA"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="50" />
+
+            <Spinner
+                android:id="@+id/spinnerUsherB"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="50" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/microphone_PtBR" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/form_views_height"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/spinnerMicA"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="50" />
+
+            <Spinner
+                android:id="@+id/spinnerMicB"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="50" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/computer_EsES" />
 
         <Spinner
-            android:id="@+id/spinnerUsherA"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="50" />
+            android:id="@+id/spinnerComputer"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/form_views_height"
+            android:layout_weight="0" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sound_EsES" />
 
         <Spinner
-            android:id="@+id/spinnerUsherB"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="50" />
+            android:id="@+id/spinnerSoundSystem"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/form_views_height"
+            android:layout_weight="0" />
+
     </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/microphone_PtBR" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/form_views_height"
-        android:orientation="horizontal">
-
-        <Spinner
-            android:id="@+id/spinnerMicA"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="50" />
-
-        <Spinner
-            android:id="@+id/spinnerMicB"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="50" />
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/computer_EsES" />
-
-    <Spinner
-        android:id="@+id/spinnerComputer"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/form_views_height"
-        android:layout_weight="0" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/sound_EsES" />
-
-    <Spinner
-        android:id="@+id/spinnerSoundSystem"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/form_views_height"
-        android:layout_weight="0" />
 
 </LinearLayout>

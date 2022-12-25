@@ -12,11 +12,14 @@
         android:textAlignment="center"
         android:textSize="20sp"
         android:padding="10dp"
-        android:text="Designações do Mês de Janeiro/2023" />
+        android:id="@+id/frag_edit_assignment_title"
+        android:text="Designações do Mês de __Month__/__year__" />
 
     <ListView
         android:id="@+id/meetings_list_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        />
 
 </LinearLayout>

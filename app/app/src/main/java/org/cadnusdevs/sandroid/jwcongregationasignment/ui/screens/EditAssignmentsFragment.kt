@@ -3,6 +3,7 @@ package org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import android.widget.TextView
 import org.cadnusdevs.sandroid.jwcongregationasignment.R
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.MeetingDay
 import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.BrotherRepository
@@ -18,10 +19,17 @@ class EditAssignmentsFragment : BaseFragment() {
     override fun getTemplate() = R.layout.fragment_edit_asignations
 
     override fun configureLayout(view: View?) {
+        setTitle();
         this.repository = BrotherRepository(requireActivity())
         var sheet = MeetingDay.generateDefaultList(5);
         var lisView = q.find<ListView>(R.id.meetings_list_view)
         lisView?.adapter = MeetingDayArrayAdapter(requireActivity(), sheet, this.repository.selectAll())
+    }
+
+    private fun setTitle() {
+        val title =  this.q.find<TextView>(R.id.frag_edit_assignment_title)
+        title?.text = title?.text.toString().replace("__Month__", "Janeiro")
+            .replace("__year__", "2023")
     }
 
     override fun setViewData() {
