@@ -72,32 +72,69 @@
                 android:background="@color/spinner_background_color"
                 android:layout_weight="50" />
         </LinearLayout>
-
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/computer_EsES" />
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:layout_marginRight="5dp"
+                android:orientation="vertical">
 
-        <Spinner
-            android:id="@+id/spinnerComputer"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/form_views_height"
-            android:background="@color/spinner_background_color"
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/computer_EsES" />
 
-            android:layout_weight="0" />
+                <Spinner
+                    android:id="@+id/spinnerComputer"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/form_views_height"
+                    android:background="@color/spinner_background_color"
+                    android:layout_weight="0" />
 
-        <TextView
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="50"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sound_EsES" />
+
+                <Spinner
+                    android:id="@+id/spinnerSoundSystem"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/form_views_height"
+                    android:background="@color/spinner_background_color"
+                    android:layout_weight="0" />
+
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/sound_EsES" />
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/form_views_height"
+                android:layout_marginRight="5dp"
+                android:text="Grupo de Limpieza" />
 
-        <Spinner
-            android:id="@+id/spinnerSoundSystem"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/form_views_height"
-            android:background="@color/spinner_background_color"
-            android:layout_weight="0" />
-
+            <Spinner
+                android:id="@+id/spinnerCleanGroup"
+                android:layout_width="117dp"
+                android:layout_height="@dimen/form_views_height"
+                android:background="@color/spinner_background_color"
+                android:entries="@array/clean_group_list"
+                />
+        </LinearLayout>
     </LinearLayout>
 
 

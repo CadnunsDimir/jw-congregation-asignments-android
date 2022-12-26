@@ -2,11 +2,14 @@ package org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.viewholders;
 
 import android.app.DatePickerDialog
 import android.view.View;
+import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
+import org.cadnusdevs.sandroid.jwcongregationasignment.DateUtils
 import org.cadnusdevs.sandroid.jwcongregationasignment.R
 import org.cadnusdevs.sandroid.jwcongregationasignment.SPINNER_NO_OPTION_TEXT_PtBR
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.Brother
+import org.cadnusdevs.sandroid.jwcongregationasignment.models.MeetingDay
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.QueryViews
 import java.util.Calendar
 
@@ -17,9 +20,14 @@ class MeetingDayViewHolder private constructor(
     val micA: Spinner,
     val micB: Spinner,
     val computer: Spinner,
-    val soundSystem: Spinner
+    val soundSystem: Spinner,
+    val cleanGroup: Spinner
 ) {
     private lateinit var q: QueryViews
+
+    val setListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
+        this.date.text = DateUtils.formatPtBr(year, month, day)
+    }
 
     var brothers: List<Brother> = ArrayList()
         set(value) {
@@ -45,6 +53,24 @@ class MeetingDayViewHolder private constructor(
         return options
     }
 
+    fun setValue(meetingDay: MeetingDay) {
+        cleanGroup.setSelection((cleanGroup.adapter as ArrayAdapter<String>).getPosition("${meetingDay.cleanGroupId}"))
+    }
+
+    fun getDate(): DateUtils.ZeroBasedDate {
+        val date = Calendar.getInstance()
+        var year = date.get(Calendar.YEAR)
+        var month = date.get(Calendar.MONTH)
+        var day = date.get(Calendar.DAY_OF_MONTH)
+        if(this.date.text != null && this.date.text.length == 10) {
+            val dateArray = this.date.text.split("/")
+            day = dateArray[0].toInt()
+            month = dateArray[1].toInt()-1
+            year = dateArray[2].toInt()
+        }
+        return DateUtils.ZeroBasedDate(year, month, day)
+    }
+
     companion object {
         fun hold(view: View): MeetingDayViewHolder {
             val q = QueryViews(view);
@@ -55,26 +81,12 @@ class MeetingDayViewHolder private constructor(
             val micB = q.find<Spinner>(R.id.spinnerMicB)
             val computer = q.find<Spinner>(R.id.spinnerComputer)
             val soundSystem = q.find<Spinner>(R.id.spinnerSoundSystem)
-            val holder = MeetingDayViewHolder(date!!,usherA!!,usherB!!,micA!!,micB!!,computer!!,soundSystem!!)
+            val cleanGroup = q.find<Spinner>(R.id.spinnerCleanGroup)
+            val holder = MeetingDayViewHolder(date!!,usherA!!,usherB!!,micA!!,micB!!,computer!!,soundSystem!!, cleanGroup!!)
             holder.q = q
             holder.date.setOnClickListener { editText ->
-                val setListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
-                    val dayString = if(day < 10) "0$day" else day
-                    val monthInt = month+1
-                    val monthString = if(monthInt < 10) "0$monthInt" else monthInt
-                    holder.date.text = "$dayString/$monthString/$year"
-                }
-                val date = Calendar.getInstance()
-                var year = date.get(Calendar.YEAR)
-                var month = date.get(Calendar.MONTH)
-                var day = date.get(Calendar.DAY_OF_MONTH)
-                if(holder.date.text != null && holder.date.text.length == 10) {
-                    val dateArray = holder.date.text.split("/")
-                    day = dateArray[0].toInt()
-                    month = dateArray[1].toInt()-1
-                    year = dateArray[2].toInt()
-                }
-                val datePicker = DatePickerDialog(editText.context,setListener,year, month, day)
+                val date = holder.getDate()
+                val datePicker = DatePickerDialog(editText.context, holder.setListener,date.year, date.monthZeroBased, date.dayOfMonth)
                 datePicker.show()
             }
             return holder;

@@ -21,7 +21,7 @@ class EditAssignmentsFragment : BaseFragment() {
     override fun configureLayout(view: View?) {
         setTitle();
         this.repository = BrotherRepository(requireActivity())
-        var sheet = MeetingDay.generateDefaultList(5);
+        var sheet = MeetingDay.generateDefaultList(10)
         var lisView = q.find<ListView>(R.id.meetings_list_view)
         lisView?.adapter = MeetingDayArrayAdapter(requireActivity(), sheet, this.repository.selectAll())
     }

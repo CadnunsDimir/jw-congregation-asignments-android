@@ -25,6 +25,7 @@ class MeetingDayArrayAdapter(private val activity: Activity, private val meeting
         val view = convertView ?: LayoutInflater.from(activity).inflate(R.layout.meeting_day_list_item, parent, false)
         this.holder = MeetingDayViewHolder.hold(view)
         this.holder.brothers = this.brothers
+        this.holder.setValue(getItem(position))
         return view
     }
 }
