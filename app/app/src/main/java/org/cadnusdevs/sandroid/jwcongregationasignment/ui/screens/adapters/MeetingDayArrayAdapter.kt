@@ -23,7 +23,7 @@ class MeetingDayArrayAdapter(private val activity: Activity, private val meeting
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = convertView ?: LayoutInflater.from(activity).inflate(R.layout.meeting_day_list_item, parent, false)
-        this.holder = MeetingDayViewHolder.hold(activity, view)
+        this.holder = MeetingDayViewHolder.hold(view)
         this.holder.brothers = this.brothers
         return view
     }

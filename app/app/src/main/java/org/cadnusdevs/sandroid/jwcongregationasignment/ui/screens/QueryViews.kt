@@ -32,8 +32,8 @@ class QueryViews(private var _view: View) {
         button?.setOnClickListener(action)
     }
 
-    fun  <T> setSpinnerItems(activity: Activity, spinner:Spinner, items: List<T>, toStringResolver: (item: T)-> String) {
-        val adapter = ArrayAdapter(activity, android.R.layout.simple_spinner_item, SpinnerItem.list(items, toStringResolver))
+    fun  <T> setSpinnerItems(spinner:Spinner, items: List<T>, toStringResolver: (item: T)-> String) {
+        val adapter = ArrayAdapter(spinner.context, android.R.layout.simple_spinner_item, SpinnerItem.list(items, toStringResolver))
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
     }
