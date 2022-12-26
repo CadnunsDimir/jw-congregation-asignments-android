@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.EditText
 import android.widget.Spinner
 import org.cadnusdevs.sandroid.jwcongregationasignment.R
+import org.cadnusdevs.sandroid.jwcongregationasignment.SPINNER_NO_OPTION_TEXT_PtBR
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.Brother
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.QueryViews
 
@@ -29,10 +30,19 @@ class MeetingDayViewHolder private constructor(
     private fun fillAllSpinners() {
         val spinners = arrayOf(this.usherA,usherB, micA, micB, computer, soundSystem)
         spinners.forEach { spinner ->
+            val items = generateSpinnerItems(brothers)
             spinner?.let {
-                    spinner -> q.setSpinnerItems(activity, spinner, brothers) { it.name }
+                    spinner -> q.setSpinnerItems(activity, spinner, items) { it.name }
             }
         }
+    }
+
+    private fun generateSpinnerItems(brothers: List<Brother>): List<Brother> {
+        val options = ArrayList<Brother>()
+        val noOption = Brother(0,SPINNER_NO_OPTION_TEXT_PtBR, false, false, false, false)
+        options.add(noOption)
+        options.addAll(brothers)
+        return options
     }
 
     companion object {
