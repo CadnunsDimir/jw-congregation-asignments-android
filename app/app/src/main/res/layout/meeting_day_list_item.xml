@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,12 +35,15 @@
                 android:id="@+id/spinnerUsherA"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
+                android:background="@color/spinner_background_color"
+                android:layout_marginRight="5dp"
                 android:layout_weight="50" />
 
             <Spinner
                 android:id="@+id/spinnerUsherB"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
+                android:background="@color/spinner_background_color"
                 android:layout_weight="50" />
         </LinearLayout>
 
@@ -59,12 +61,15 @@
                 android:id="@+id/spinnerMicA"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
+                android:background="@color/spinner_background_color"
+                android:layout_marginRight="5dp"
                 android:layout_weight="50" />
 
             <Spinner
                 android:id="@+id/spinnerMicB"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
+                android:background="@color/spinner_background_color"
                 android:layout_weight="50" />
         </LinearLayout>
 
@@ -77,6 +82,8 @@
             android:id="@+id/spinnerComputer"
             android:layout_width="match_parent"
             android:layout_height="@dimen/form_views_height"
+            android:background="@color/spinner_background_color"
+
             android:layout_weight="0" />
 
         <TextView
@@ -88,6 +95,7 @@
             android:id="@+id/spinnerSoundSystem"
             android:layout_width="match_parent"
             android:layout_height="@dimen/form_views_height"
+            android:background="@color/spinner_background_color"
             android:layout_weight="0" />
 
     </LinearLayout>
