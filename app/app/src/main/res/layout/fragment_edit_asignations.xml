@@ -13,7 +13,7 @@
         android:textSize="20sp"
         android:padding="10dp"
         android:id="@+id/frag_edit_assignment_title"
-        android:text="Designações do Mês de __Month__/__year__" />
+        android:text="@string/frag_edit_assignments__title" />
 
     <ListView
         android:id="@+id/meetings_list_view"

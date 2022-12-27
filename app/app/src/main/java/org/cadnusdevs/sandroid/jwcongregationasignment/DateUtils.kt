@@ -27,16 +27,33 @@ class DateUtils {
             val monthString = if(monthInt < 10) "0$monthInt" else monthInt
             return "$dayString/$monthString/$year"
         }
-        fun dayOfWeekAsString(language: SupportedLanguages) : String{
+        private fun format(language: SupportedLanguages, pattern: String): String {
             val locale = when(language){
                 SupportedLanguages.Es-> EsESLocale
                 SupportedLanguages.Pt-> PtBRLocale
             }
             val sdf = SimpleDateFormat("dd/MM/yyyy", locale)
             val myDate: Date = sdf.parse(this.formatPtBr())
-            sdf.applyPattern("EEEE")
+            sdf.applyPattern(pattern)
             return sdf.format(myDate)
                 .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
+        }
+
+        fun dayOfWeekAsString(language: SupportedLanguages) : String{
+            return this.format(language, "EEEE")
+        }
+
+        fun addMonth(amount: Int) {
+            val date = Calendar.getInstance()
+            date.set(year, monthZeroBased,dayOfMonth)
+            date.add(Calendar.MONTH, amount)
+            this.year = date.get(Calendar.YEAR)
+            this.monthZeroBased = date.get(Calendar.MONTH)
+            this.dayOfMonth = date.get(Calendar.DAY_OF_MONTH)
+        }
+
+        fun monthAsString(languages: SupportedLanguages): String {
+            return this.format(languages, "MMMM")
         }
     }
 

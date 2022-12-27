@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.TextView
+import org.cadnusdevs.sandroid.jwcongregationasignment.DateUtils
 import org.cadnusdevs.sandroid.jwcongregationasignment.R
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.MeetingDay
 import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.BrotherRepository
@@ -28,8 +29,11 @@ class EditAssignmentsFragment : BaseFragment() {
 
     private fun setTitle() {
         val title =  this.q.find<TextView>(R.id.frag_edit_assignment_title)
-        title?.text = title?.text.toString().replace("__Month__", "Janeiro")
-            .replace("__year__", "2023")
+        val date = DateUtils.ZeroBasedDate()
+        date.addMonth(1)
+        title?.text = title?.text.toString()
+            .replace("__Month__", date.monthAsString(DateUtils.SupportedLanguages.Es))
+            .replace("__year__", date.year.toString())
     }
 
     override fun setViewData() {
