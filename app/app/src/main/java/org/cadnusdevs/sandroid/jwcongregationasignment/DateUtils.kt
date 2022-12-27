@@ -36,6 +36,7 @@ class DateUtils {
             val myDate: Date = sdf.parse(this.formatPtBr())
             sdf.applyPattern("EEEE")
             return sdf.format(myDate)
+                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
         }
     }
 
