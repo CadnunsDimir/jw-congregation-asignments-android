@@ -23,10 +23,12 @@ class MeetingDayViewHolder private constructor(
     val soundSystem: Spinner,
     val cleanGroup: Spinner
 ) {
+    private var _dateZeroBased: DateUtils.ZeroBasedDate? = null
     private lateinit var q: QueryViews
 
     val setListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
-        this.date.text = DateUtils.formatPtBr(year, month, day)
+        this._dateZeroBased = DateUtils.toDate(year, month, day)
+        this.date.text = "${_dateZeroBased?.dayOfWeekAsString(DateUtils.SupportedLanguages.Es)}, ${_dateZeroBased?.formatPtBr()}"
     }
 
     var brothers: List<Brother> = ArrayList()
@@ -58,17 +60,9 @@ class MeetingDayViewHolder private constructor(
     }
 
     fun getDate(): DateUtils.ZeroBasedDate {
-        val date = Calendar.getInstance()
-        var year = date.get(Calendar.YEAR)
-        var month = date.get(Calendar.MONTH)
-        var day = date.get(Calendar.DAY_OF_MONTH)
-        if(this.date.text != null && this.date.text.length == 10) {
-            val dateArray = this.date.text.split("/")
-            day = dateArray[0].toInt()
-            month = dateArray[1].toInt()-1
-            year = dateArray[2].toInt()
-        }
-        return DateUtils.ZeroBasedDate(year, month, day)
+        return if(this._dateZeroBased != null)
+            this._dateZeroBased!!
+        else DateUtils.ZeroBasedDate()
     }
 
     companion object {

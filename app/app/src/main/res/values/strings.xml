@@ -103,5 +103,5 @@
     <string name="microphone_PtBR">Microfone</string>
     <string name="computer_EsES">Computadora</string>
     <string name="sound_EsES">Sonido</string>
-    <string name="edit_date_hint_text_PtBR">Selecione uma data</string>
+    <string name="edit_date_hint_text_EsES">Selecione una fecha</string>
 </resources>
