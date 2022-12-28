@@ -4,6 +4,7 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.Fragment
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.EditAssignmentsFragment
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.ListBrotherFragment
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.MainFragment
@@ -31,15 +32,25 @@ class MainActivity : AppCompatActivity() {
         val colorUnselected = Color.parseColor("#FFBB86FC")
 
         q.onClick(R.id.menu_button_brothers) {
-            it.setBackgroundColor(colorSelected)
-            q.find<View>(R.id.menu_button_assignments)?.setBackgroundColor(colorUnselected)
-            q.openFragment(ListBrotherFragment.newInstance())
+            val fragment = ListBrotherFragment.newInstance()
+            q.openFragment(fragment)
+            setButtonColors(fragment)
         }
         q.onClick(R.id.menu_button_assignments) {
-            it.setBackgroundColor(colorSelected)
-            q.find<View>(R.id.menu_button_brothers)?.setBackgroundColor(colorUnselected)
-            q.openFragment(EditAssignmentsFragment())
+            val fragment = EditAssignmentsFragment()
+            q.openFragment(fragment)
+            setButtonColors(fragment)
         }
+    }
+
+    private fun setButtonColors(currentFragment: Fragment) {
+        val colorUnselected = "#FFBB86FC"
+        val colorSelected = "#FF6200EE"
+
+        q.setColor(R.id.menu_button_assignments,
+            if(currentFragment is EditAssignmentsFragment) colorSelected else colorUnselected)
+        q.setColor(R.id.menu_button_brothers,
+            if(currentFragment is ListBrotherFragment) colorSelected else colorUnselected)
     }
 
     private fun getRootView(): View {

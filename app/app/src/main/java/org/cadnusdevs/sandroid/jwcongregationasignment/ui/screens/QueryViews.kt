@@ -1,6 +1,7 @@
 package org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens
 
 import android.app.Activity
+import android.graphics.Color
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -49,13 +50,22 @@ class QueryViews(private var _view: View) {
 
     fun openFragment(fragment: Fragment, isFromMainActivity: Boolean = false) {
         if(_view.context is FragmentActivity){
-            val transaction = (_view.context as FragmentActivity).supportFragmentManager.beginTransaction()
-                .replace(R.id.container, fragment)
-            if(isFromMainActivity){
-                transaction.commitNow()
-            }else{
-                transaction.addToBackStack(null).commit()
+            val supportFragmentManager = (_view.context as FragmentActivity).supportFragmentManager
+            val currentFragment = if(supportFragmentManager.fragments.size > 0) supportFragmentManager.fragments.last().javaClass else Object().javaClass
+            val newFragment = fragment.javaClass
+            if(currentFragment != newFragment) {
+                val transaction = supportFragmentManager.beginTransaction()
+                    .replace(R.id.container, fragment)
+                if(isFromMainActivity){
+                    transaction.commitNow()
+                }else{
+                    transaction.addToBackStack(null).commit()
+                }
             }
         }
+    }
+
+    fun setColor(id: Int, hexColor: String) {
+        find<View>(id)?.setBackgroundColor(Color.parseColor(hexColor))
     }
 }
