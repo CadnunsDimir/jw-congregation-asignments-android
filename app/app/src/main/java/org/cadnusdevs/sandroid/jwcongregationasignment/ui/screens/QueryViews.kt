@@ -3,9 +3,14 @@ package org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens
 import android.app.Activity
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import org.cadnusdevs.sandroid.jwcongregationasignment.R
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.SpinnerItem
 
 class QueryViews(private var _view: View) {
+
     fun <T> find(id: Int): T? { return this._view?.findViewById(id) }
 
     fun getEditTextValue(componentId: Int): String {
@@ -40,5 +45,17 @@ class QueryViews(private var _view: View) {
 
     fun showIf(id: Int, value: Boolean) {
         find<View>(id)?.visibility = if(value) View.VISIBLE else View.GONE
+    }
+
+    fun openFragment(fragment: Fragment, isFromMainActivity: Boolean = false) {
+        if(_view.context is FragmentActivity){
+            val transaction = (_view.context as FragmentActivity).supportFragmentManager.beginTransaction()
+                .replace(R.id.container, fragment)
+            if(isFromMainActivity){
+                transaction.commitNow()
+            }else{
+                transaction.addToBackStack(null).commit()
+            }
+        }
     }
 }

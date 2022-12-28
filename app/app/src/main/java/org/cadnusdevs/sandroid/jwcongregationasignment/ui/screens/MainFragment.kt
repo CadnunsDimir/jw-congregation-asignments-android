@@ -22,13 +22,6 @@ class MainFragment : BaseFragment() {
         this.q.onClick (R.id.new_brother_screen_button) {
             this.openFragment(EditBrotherFragment.newInstance())
         }
-
-        this.q.onClick (R.id.list_brother_screen_button) {
-            this.openFragment(ListBrotherFragment.newInstance())
-        }
-        this.q.onClick (R.id.asigment_screen_button) {
-            this.openFragment(EditAssignmentsFragment())
-        }
     }
 
     companion object {

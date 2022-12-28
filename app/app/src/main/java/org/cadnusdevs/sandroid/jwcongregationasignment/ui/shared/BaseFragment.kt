@@ -33,10 +33,7 @@ abstract class BaseFragment : Fragment(){
     }
 
     fun openFragment(fragment: Fragment) {
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.container, fragment)
-            .addToBackStack(null)
-            .commit()
+        q.openFragment(fragment)
     }
 
     fun goBack() {

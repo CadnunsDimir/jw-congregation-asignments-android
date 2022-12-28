@@ -16,4 +16,6 @@
     <string name="sound_EsES">Sonido</string>
     <string name="edit_date_hint_text_EsES">Selecione una fecha</string>
     <string name="frag_edit_assignments__title">Asignaciones para __Month__/__year__</string>
+    <string name="brothers">Hermanos</string>
+    <string name="assignments">Asignaciones</string>
 </resources>
