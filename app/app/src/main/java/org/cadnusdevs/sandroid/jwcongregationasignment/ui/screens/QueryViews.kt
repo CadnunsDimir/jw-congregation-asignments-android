@@ -68,4 +68,8 @@ class QueryViews(private var _view: View) {
     fun setColor(id: Int, hexColor: String) {
         find<View>(id)?.setBackgroundColor(Color.parseColor(hexColor))
     }
+
+    fun <T> getSpinnerSelectedItem(spinner: Spinner): T {
+        return (spinner.selectedItem as SpinnerItem<T>).item
+    }
 }

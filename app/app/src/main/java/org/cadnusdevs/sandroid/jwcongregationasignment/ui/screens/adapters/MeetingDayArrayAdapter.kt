@@ -13,7 +13,8 @@ import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.viewholders.Me
 class MeetingDayArrayAdapter(private val activity: Activity, private val meetings: List<MeetingDay>, private val brothers: List<Brother>)
     : ArrayAdapter<MeetingDay>(activity, 0,meetings) {
 
-    private lateinit var holder: MeetingDayViewHolder
+    private var onChangeListener: OnChange? = null
+    val itens: ArrayList<MeetingDayViewHolder?> = ArrayList(this.meetings.map { null })
 
     override fun getCount(): Int = meetings.size
 
@@ -23,9 +24,28 @@ class MeetingDayArrayAdapter(private val activity: Activity, private val meeting
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = convertView ?: LayoutInflater.from(activity).inflate(R.layout.meeting_day_list_item, parent, false)
-        this.holder = MeetingDayViewHolder.hold(view)
-        this.holder.brothers = this.brothers
-        this.holder.setValue(getItem(position))
+
+        val holder = MeetingDayViewHolder.hold(view)
+        holder.brothers = this.brothers
+        holder.setValue(getItem(position))
+        holder.setOnChange{
+            onChangeListener?.onChange(this.meetings.map {
+                val targetHolder = this.itens.filter { meetingDayViewHolder -> meetingDayViewHolder?.meetingDayOriginalValue == it }
+                if(targetHolder.isNotEmpty()) {
+                    return@map targetHolder.first()?.toModel() ?: it
+                }
+                return@map it
+            })
+        }
+        this.itens[position] = holder
         return view
+    }
+
+    interface OnChange{
+        fun onChange(days: List<MeetingDay>)
+    }
+
+    fun setOnChange(listener: OnChange) {
+        this.onChangeListener = listener
     }
 }

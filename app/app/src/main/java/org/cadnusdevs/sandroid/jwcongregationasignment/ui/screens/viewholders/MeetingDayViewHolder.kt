@@ -2,6 +2,8 @@ package org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.viewholders;
 
 import android.app.DatePickerDialog
 import android.view.View;
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
@@ -13,16 +15,19 @@ import org.cadnusdevs.sandroid.jwcongregationasignment.models.MeetingDay
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.QueryViews
 import java.util.Calendar
 
-class MeetingDayViewHolder private constructor(
-    val date: TextView,
-    val usherA: Spinner,
-    val usherB: Spinner,
-    val micA: Spinner,
-    val micB: Spinner,
-    val computer: Spinner,
-    val soundSystem: Spinner,
-    val cleanGroup: Spinner
-) {
+class MeetingDayViewHolder
+    private constructor(
+        val date: TextView,
+        val usherA: Spinner,
+        val usherB: Spinner,
+        val micA: Spinner,
+        val micB: Spinner,
+        val computer: Spinner,
+        val soundSystem: Spinner,
+        val cleanGroup: Spinner
+    ) : OnItemSelectedListener {
+    lateinit var meetingDayOriginalValue: MeetingDay
+    private var onChangeListener: (() -> Unit?)? = null
     private var _dateZeroBased: DateUtils.ZeroBasedDate? = null
     private lateinit var q: QueryViews
 
@@ -37,15 +42,23 @@ class MeetingDayViewHolder private constructor(
             fillAllSpinners()
         }
 
+    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+        this.onChangeListener?.invoke()
+    }
+
+    override fun onNothingSelected(p0: AdapterView<*>?) {
+//        this.onChangeListener?.invoke()
+    }
     private fun fillAllSpinners() {
-        val spinners = arrayOf(this.usherA,usherB, micA, micB, computer, soundSystem)
-        spinners.forEach { spinner ->
+        this.spinners().forEach { spinner ->
             val items = generateSpinnerItems(brothers)
             spinner?.let {
                     spinner -> q.setSpinnerItems(spinner, items) { it.name }
             }
         }
     }
+
+    private fun spinners() = arrayOf(this.usherA,usherB, micA, micB, computer, soundSystem)
 
     private fun generateSpinnerItems(brothers: List<Brother>): List<Brother> {
         val options = ArrayList<Brother>()
@@ -56,6 +69,7 @@ class MeetingDayViewHolder private constructor(
     }
 
     fun setValue(meetingDay: MeetingDay) {
+        meetingDayOriginalValue = meetingDay
         cleanGroup.setSelection((cleanGroup.adapter as ArrayAdapter<String>).getPosition("${meetingDay.cleanGroupId}"))
     }
 
@@ -63,6 +77,33 @@ class MeetingDayViewHolder private constructor(
         return if(this._dateZeroBased != null)
             this._dateZeroBased!!
         else DateUtils.ZeroBasedDate()
+    }
+
+    private fun setEvents() {
+        date.setOnClickListener { editText ->
+            val date = this.getDate()
+            val datePicker = DatePickerDialog(editText.context, this.setListener,date.year, date.monthZeroBased, date.dayOfMonth)
+            datePicker.show()
+        }
+
+        this.spinners().forEach { it.setOnItemSelectedListener(this) }
+    }
+
+    fun toModel(): MeetingDay {
+        return MeetingDay(_dateZeroBased?.dayOfMonth,
+            _dateZeroBased?.monthZeroBased,
+            q.getSpinnerSelectedItem<Brother>(usherA),
+            q.getSpinnerSelectedItem<Brother>(usherB),
+            q.getSpinnerSelectedItem<Brother>(micA),
+            q.getSpinnerSelectedItem<Brother>(micB),
+            q.getSpinnerSelectedItem<Brother>(computer),
+            q.getSpinnerSelectedItem<Brother>(soundSystem),
+            (cleanGroup.selectedItem as String).toInt(),
+        )
+    }
+
+    fun setOnChange(function: () -> Unit?) {
+        onChangeListener = function
     }
 
     companion object {
@@ -78,12 +119,10 @@ class MeetingDayViewHolder private constructor(
             val cleanGroup = q.find<Spinner>(R.id.spinnerCleanGroup)
             val holder = MeetingDayViewHolder(date!!,usherA!!,usherB!!,micA!!,micB!!,computer!!,soundSystem!!, cleanGroup!!)
             holder.q = q
-            holder.date.setOnClickListener { editText ->
-                val date = holder.getDate()
-                val datePicker = DatePickerDialog(editText.context, holder.setListener,date.year, date.monthZeroBased, date.dayOfMonth)
-                datePicker.show()
-            }
+            holder.setEvents();
             return holder;
         }
     }
+
+
 }
