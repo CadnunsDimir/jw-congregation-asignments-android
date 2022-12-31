@@ -15,6 +15,13 @@
         android:id="@+id/frag_edit_assignment_title"
         android:text="@string/frag_edit_assignments__title" />
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Stats"
+        android:id="@+id/stats_btn"
+        />
+
     <ListView
         android:id="@+id/meetings_list_view"
         android:layout_width="match_parent"

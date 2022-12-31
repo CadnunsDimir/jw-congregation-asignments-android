@@ -1,7 +1,10 @@
 package org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens
 
 import android.view.View
+import android.widget.Button
 import android.widget.ListView
+import android.widget.TableLayout
+import android.widget.TableRow
 import android.widget.TextView
 import org.cadnusdevs.sandroid.jwcongregationasignment.DateUtils
 import org.cadnusdevs.sandroid.jwcongregationasignment.R
@@ -16,6 +19,7 @@ import org.cadnusdevs.sandroid.jwcongregationasignment.ui.shared.BaseFragment
 // template: R.layout.fragment_edit_asignations
 class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange {
 
+    private lateinit var statsButton: Button
     private lateinit var listViewAdapter: MeetingDayArrayAdapter
     private lateinit var lisView: ListView
     private lateinit var repository: BrotherRepository
@@ -31,6 +35,7 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
         brothers = this.repository.selectAll() as ArrayList<Brother>
         listViewAdapter = MeetingDayArrayAdapter(requireActivity(), sheet, brothers)
         lisView.adapter = listViewAdapter
+        statsButton = q.find<Button>(R.id.stats_btn)!!
     }
 
     private fun setTitle() {
@@ -47,6 +52,22 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
 
     override fun setEvents() {
         listViewAdapter.setOnChange(this)
+        statsButton.setOnClickListener{
+            val table = TableLayout(requireActivity())
+            brotherVersusDates.forEach { (brother, hashmap) ->
+                run {
+                    val row = TableRow(requireActivity())
+                    row.addView(q.Text(brother))
+                    hashmap.forEach { (_, assignment) ->
+                        val text = q.Text(assignment)
+                        row.addView(text)
+                        text.layoutParams.width = 50
+                    }
+                    table.addView(row)
+                }
+            }
+            q.openDialog(table)
+        }
     }
 
     override fun onChange(days: List<MeetingDay>) {
@@ -65,12 +86,12 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
         }
         days.forEach {
             val position = days.indexOf(it)
-            setOnMap(it.usherA!!, brotherVersusDates, position, "A")
-            setOnMap(it.usherB!!, brotherVersusDates, position, "A")
-            setOnMap(it.microphoneA!!, brotherVersusDates, position, "M")
-            setOnMap(it.microphoneB!!, brotherVersusDates, position, "M")
-            setOnMap(it.computer!!, brotherVersusDates, position, "C")
-            setOnMap(it.soundSystem!!, brotherVersusDates, position, "S")
+            setOnMap(it.usherA, brotherVersusDates, position, "A")
+            setOnMap(it.usherB, brotherVersusDates, position, "A")
+            setOnMap(it.microphoneA, brotherVersusDates, position, "M")
+            setOnMap(it.microphoneB, brotherVersusDates, position, "M")
+            setOnMap(it.computer, brotherVersusDates, position, "C")
+            setOnMap(it.soundSystem, brotherVersusDates, position, "S")
         }
 
         brothers.forEach { brother ->
@@ -83,12 +104,12 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
     }
 
     private fun setOnMap(
-        brother: Brother,
+        brother: Brother?,
         brotherVersusDates: HashMap<String, HashMap<Int, String>>,
         position: Int,
         value: String
     ) {
-        if(brother.id > 0) {
+        if(brother != null && brother.id > 0) {
             val date = brotherVersusDates[brother.name]!!
             date[position] = value
         }

@@ -1,6 +1,7 @@
 package org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.graphics.Color
 import android.view.View
 import android.widget.*
@@ -71,5 +72,19 @@ class QueryViews(private var _view: View) {
 
     fun <T> getSpinnerSelectedItem(spinner: Spinner): T {
         return (spinner.selectedItem as SpinnerItem<T>).item
+    }
+
+    fun openDialog(content: View) {
+        _view.context ?.let {
+            // Use the Builder class for convenient dialog construction
+            val builder = AlertDialog.Builder(it)
+            builder.setView(content).create().show()
+        } ?: throw IllegalStateException("Activity cannot be null")
+    }
+
+    fun Text(text: String, width: Int = 5): TextView {
+        val textView = TextView(_view.context)
+        textView.text = text
+        return textView
     }
 }
