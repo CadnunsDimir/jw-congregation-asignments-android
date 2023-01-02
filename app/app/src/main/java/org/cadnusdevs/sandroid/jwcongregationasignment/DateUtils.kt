@@ -11,9 +11,11 @@ class DateUtils {
 
 
 
+
     class ZeroBasedDate(var year: Int, var monthZeroBased: Int, var dayOfMonth: Int) {
-        constructor() : this(0,0,0){
-            val date = Calendar.getInstance()
+        constructor() : this(Calendar.getInstance())
+
+        private constructor(date: Calendar) : this(0,0,0){
             this.year = date.get(Calendar.YEAR)
             this.monthZeroBased = date.get(Calendar.MONTH)
             this.dayOfMonth = date.get(Calendar.DAY_OF_MONTH)
@@ -44,16 +46,50 @@ class DateUtils {
         }
 
         fun addMonth(amount: Int) {
-            val date = Calendar.getInstance()
-            date.set(year, monthZeroBased,dayOfMonth)
+            val date = this.toCalendar()
             date.add(Calendar.MONTH, amount)
             this.year = date.get(Calendar.YEAR)
             this.monthZeroBased = date.get(Calendar.MONTH)
             this.dayOfMonth = date.get(Calendar.DAY_OF_MONTH)
         }
 
+        private fun toCalendar(): Calendar {
+            val date = Calendar.getInstance()
+            date.set(year, monthZeroBased,dayOfMonth)
+            return date
+        }
+
         fun monthAsString(languages: SupportedLanguages): String {
             return this.format(languages, "MMMM")
+        }
+
+        fun formatMonthYearBr(): String {
+            return this.format(SupportedLanguages.Pt, "MM/yyyy")
+        }
+
+        fun currentDateOrNext(vararg calendarWeekDays: Int): ZeroBasedDate {
+            val calendar = toCalendar()
+            if(calendarWeekDays.contains(calendar.get(Calendar.DAY_OF_WEEK)))
+                return this
+            else{
+                return nextDate(calendar, *calendarWeekDays)
+            }
+        }
+
+        private fun nextDate(calendar: Calendar, vararg calendarWeekDays: Int): ZeroBasedDate {
+            var counter = 1
+            while (counter<=7 || !calendarWeekDays.contains(calendar.get(Calendar.DAY_OF_WEEK))){
+                calendar.add(Calendar.DAY_OF_MONTH,1)
+                ++counter
+            }
+            return ZeroBasedDate(calendar)
+        }
+
+
+
+        fun nextDate(vararg calendarWeekDays: Int): ZeroBasedDate {
+            val calendar = toCalendar()
+            return nextDate(calendar, *calendarWeekDays)
         }
     }
 

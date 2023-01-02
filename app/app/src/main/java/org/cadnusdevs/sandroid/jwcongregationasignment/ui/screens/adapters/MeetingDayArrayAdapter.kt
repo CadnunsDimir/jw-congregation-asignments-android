@@ -10,7 +10,7 @@ import org.cadnusdevs.sandroid.jwcongregationasignment.models.Brother
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.MeetingDay
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.viewholders.MeetingDayViewHolder
 
-class MeetingDayArrayAdapter(private val activity: Activity, private val meetings: List<MeetingDay>, private val brothers: List<Brother>)
+class MeetingDayArrayAdapter(private val activity: Activity, private val monthYear: String, private val meetings: List<MeetingDay>, private val brothers: List<Brother>)
     : ArrayAdapter<MeetingDay>(activity, 0,meetings) {
 
     private var onChangeListener: OnChange? = null
@@ -32,7 +32,7 @@ class MeetingDayArrayAdapter(private val activity: Activity, private val meeting
             onChangeListener?.onChange(this.meetings.map {
                 val targetHolder = this.itens.filter { meetingDayViewHolder -> meetingDayViewHolder?.meetingDayOriginalValue == it }
                 if(targetHolder.isNotEmpty()) {
-                    return@map targetHolder.first()?.toModel() ?: it
+                    return@map targetHolder.first()?.toModel(monthYear) ?: it
                 }
                 return@map it
             })

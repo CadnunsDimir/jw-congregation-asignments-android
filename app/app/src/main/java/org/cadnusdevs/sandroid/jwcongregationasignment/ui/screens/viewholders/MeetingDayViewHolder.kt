@@ -89,9 +89,12 @@ class MeetingDayViewHolder
         this.spinners().forEach { it.setOnItemSelectedListener(this) }
     }
 
-    fun toModel(): MeetingDay {
-        return MeetingDay(_dateZeroBased?.dayOfMonth,
+    fun toModel(monthYear: String): MeetingDay {
+        return MeetingDay(
+            _dateZeroBased?.dayOfMonth,
             _dateZeroBased?.monthZeroBased,
+            _dateZeroBased?.year,
+            monthYear,
             q.getSpinnerSelectedItem<Brother>(usherA),
             q.getSpinnerSelectedItem<Brother>(usherB),
             q.getSpinnerSelectedItem<Brother>(micA),
