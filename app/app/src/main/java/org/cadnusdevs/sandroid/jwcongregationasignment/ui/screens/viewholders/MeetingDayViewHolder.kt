@@ -32,8 +32,7 @@ class MeetingDayViewHolder
     private lateinit var q: QueryViews
 
     val setListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
-        this._dateZeroBased = DateUtils.toDate(year, month, day)
-        this.date.text = "${_dateZeroBased?.dayOfWeekAsString(DateUtils.SupportedLanguages.Es)}, ${_dateZeroBased?.formatPtBr()}"
+        this.setDate(year, month, day)
     }
 
     var brothers: List<Brother> = ArrayList()
@@ -71,6 +70,12 @@ class MeetingDayViewHolder
     fun setValue(meetingDay: MeetingDay) {
         meetingDayOriginalValue = meetingDay
         cleanGroup.setSelection((cleanGroup.adapter as ArrayAdapter<String>).getPosition("${meetingDay.cleanGroupId}"))
+        meetingDay.day?.let { this.setDate(meetingDay.year!!, meetingDay.month!!, meetingDay.day) };
+    }
+
+    private fun setDate(year: Int, month: Int, day: Int) {
+        this._dateZeroBased = DateUtils.toDate(year, month, day)
+        this.date.text = "${_dateZeroBased?.dayOfWeekAsString(DateUtils.SupportedLanguages.Es)}, ${_dateZeroBased?.formatPtBr()}"
     }
 
     fun getDate(): DateUtils.ZeroBasedDate {

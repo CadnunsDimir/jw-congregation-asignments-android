@@ -69,18 +69,16 @@ class DateUtils {
 
         fun currentDateOrNext(vararg calendarWeekDays: Int): ZeroBasedDate {
             val calendar = toCalendar()
-            if(calendarWeekDays.contains(calendar.get(Calendar.DAY_OF_WEEK)))
-                return this
+            return if(calendarWeekDays.contains(calendar.get(Calendar.DAY_OF_WEEK)))
+                this
             else{
-                return nextDate(calendar, *calendarWeekDays)
+                nextDate(calendar, *calendarWeekDays)
             }
         }
 
         private fun nextDate(calendar: Calendar, vararg calendarWeekDays: Int): ZeroBasedDate {
-            var counter = 1
-            while (counter<=7 || !calendarWeekDays.contains(calendar.get(Calendar.DAY_OF_WEEK))){
+            while (!calendarWeekDays.contains(calendar.get(Calendar.DAY_OF_WEEK))){
                 calendar.add(Calendar.DAY_OF_MONTH,1)
-                ++counter
             }
             return ZeroBasedDate(calendar)
         }
@@ -89,11 +87,18 @@ class DateUtils {
 
         fun nextDate(vararg calendarWeekDays: Int): ZeroBasedDate {
             val calendar = toCalendar()
+            calendar.add(Calendar.DAY_OF_MONTH,1)
             return nextDate(calendar, *calendarWeekDays)
         }
     }
 
     companion object{
         fun toDate(year: Int, monthZeroBased: Int, dayOfMonth: Int) = ZeroBasedDate(year,monthZeroBased, dayOfMonth)
+        fun firstDayNextMonth(): ZeroBasedDate {
+            val month = ZeroBasedDate()
+            month.dayOfMonth = 1
+            month.addMonth(1)
+            return month
+        }
     }
 }

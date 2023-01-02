@@ -23,9 +23,9 @@ class MeetingDay(val day: Int?,
             for(i in 1..days) {
                 val groupId = (i - 1) % 4 + 1
                 sheet.add(MeetingDay(
-                    currentDate.year,
-                    currentDate.monthZeroBased,
                     currentDate.dayOfMonth,
+                    currentDate.monthZeroBased,
+                    currentDate.year,
                     initialDate.formatMonthYearBr(),null,null,null,null,null,null,
                     groupId))
                 currentDate = currentDate.nextDate(Calendar.FRIDAY, Calendar.SUNDAY)

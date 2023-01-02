@@ -24,13 +24,12 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
     private lateinit var listViewAdapter: MeetingDayArrayAdapter
     private lateinit var lisView: ListView
     private lateinit var repository: BrotherRepository
-    val brotherVersusDates = HashMap<String, HashMap<Int, String>>()
+    private val brotherVersusDates = HashMap<String, HashMap<Int, String>>()
 
     override fun getTemplate() = R.layout.fragment_edit_asignations
 
     override fun configureLayout(view: View?) {
-        month = DateUtils.ZeroBasedDate()
-        month.addMonth(1)
+        month = DateUtils.firstDayNextMonth()
         setTitle();
         this.repository = BrotherRepository(requireActivity())
         var sheet = MeetingDay.generateDefaultList(10, month)
