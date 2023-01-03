@@ -23,18 +23,17 @@ class ListBrotherFragment : BaseFragment() {
         this.repository = BrotherRepository(requireActivity())
         var repository = this.repository
         var fragment = this;
-        if (view is RecyclerView) {
-            with(view) {
-                layoutManager = when {
-                    columnCount <= 1 -> LinearLayoutManager(context)
-                    else -> GridLayoutManager(context, columnCount)
-                }
-                var brotherAdapter = MyBrotherRecyclerViewAdapter(repository.selectAll())
-                brotherAdapter.defineItemClickBehavior{
-                    fragment.onItemClick(it)
-                }
-                adapter = brotherAdapter
+        val recycler = q.find<RecyclerView>(R.id.list)
+        with(recycler!!) {
+            layoutManager = when {
+                columnCount <= 1 -> LinearLayoutManager(context)
+                else -> GridLayoutManager(context, columnCount)
             }
+            var brotherAdapter = MyBrotherRecyclerViewAdapter(repository.selectAll())
+            brotherAdapter.defineItemClickBehavior{
+                fragment.onItemClick(it)
+            }
+            adapter = brotherAdapter
         }
     }
     override fun setViewData() {
@@ -44,6 +43,9 @@ class ListBrotherFragment : BaseFragment() {
     }
 
     override fun setEvents(){
+        this.q.onClick (R.id.new_brother_screen_button) {
+            this.openFragment(EditBrotherFragment.newInstance())
+        }
     }
 
     fun onItemClick(brother: Brother) {

@@ -9,6 +9,7 @@ import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.EditAssignment
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.ListBrotherFragment
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.MainFragment
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.QueryViews
+import org.cadnusdevs.sandroid.jwcongregationasignment.ui.shared.BaseFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var q: QueryViews
@@ -28,19 +29,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setEvents() {
-        val colorSelected = Color.parseColor("#FF6200EE")
-        val colorUnselected = Color.parseColor("#FFBB86FC")
-
         q.onClick(R.id.menu_button_brothers) {
-            val fragment = ListBrotherFragment.newInstance()
-            q.openFragment(fragment)
-            setButtonColors(fragment)
+            selectFragment(ListBrotherFragment.newInstance())
         }
         q.onClick(R.id.menu_button_assignments) {
-            val fragment = EditAssignmentsFragment()
-            q.openFragment(fragment)
-            setButtonColors(fragment)
+            selectFragment(EditAssignmentsFragment())
         }
+    }
+
+    private fun selectFragment(fragment: BaseFragment) {
+        q.openFragment(fragment,true)
+        setButtonColors(fragment)
     }
 
     private fun setButtonColors(currentFragment: Fragment) {

@@ -19,9 +19,7 @@ class MainFragment : BaseFragment() {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
     }
     override fun setEvents() {
-        this.q.onClick (R.id.new_brother_screen_button) {
-            this.openFragment(EditBrotherFragment.newInstance())
-        }
+
     }
 
     companion object {
