@@ -8,7 +8,22 @@ class DateUtils {
         Pt,
         Es
     }
+    enum class WeekDay(val value: Int) {
+        Sunday(Calendar.SUNDAY),
+        Monday(Calendar.MONDAY),
+        Tuesday(Calendar.TUESDAY),
+        Wednesday(Calendar.WEDNESDAY),
+        Thursday(Calendar.THURSDAY),
+        Friday(Calendar.FRIDAY),
+        Saturday(Calendar.SATURDAY);
 
+        companion object{
+            private val types = values().associateBy { it.value }
+
+            fun from(calendar: Calendar): WeekDay? = types[calendar.get(Calendar.DAY_OF_WEEK)]
+            fun from(value: Int): WeekDay? = types[value]
+        }
+    }
 
 
 
@@ -67,28 +82,26 @@ class DateUtils {
             return this.format(SupportedLanguages.Pt, "MM/yyyy")
         }
 
-        fun currentDateOrNext(vararg calendarWeekDays: Int): ZeroBasedDate {
-            val calendar = toCalendar()
-            return if(calendarWeekDays.contains(calendar.get(Calendar.DAY_OF_WEEK)))
-                this
-            else{
-                nextDate(calendar, *calendarWeekDays)
-            }
-        }
-
-        private fun nextDate(calendar: Calendar, vararg calendarWeekDays: Int): ZeroBasedDate {
-            while (!calendarWeekDays.contains(calendar.get(Calendar.DAY_OF_WEEK))){
+        private fun getNextDateFromCalendar(calendar: Calendar, vararg calendarWeekDays: WeekDay): ZeroBasedDate {
+            while (!calendarWeekDays.contains(WeekDay.from(calendar))){
                 calendar.add(Calendar.DAY_OF_MONTH,1)
             }
             return ZeroBasedDate(calendar)
         }
 
-
-
-        fun nextDate(vararg calendarWeekDays: Int): ZeroBasedDate {
+        fun nextDate(vararg calendarWeekDays: WeekDay): ZeroBasedDate {
             val calendar = toCalendar()
             calendar.add(Calendar.DAY_OF_MONTH,1)
-            return nextDate(calendar, *calendarWeekDays)
+            return getNextDateFromCalendar(calendar, *calendarWeekDays)
+        }
+
+        fun currentDateOrNext(vararg calendarWeekDays: WeekDay): ZeroBasedDate {
+            val calendar = toCalendar()
+            return if(calendarWeekDays.contains(WeekDay.from(calendar)))
+                this
+            else{
+                getNextDateFromCalendar(calendar, *calendarWeekDays)
+            }
         }
     }
 

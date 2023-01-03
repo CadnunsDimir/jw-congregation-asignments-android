@@ -1,7 +1,6 @@
 package org.cadnusdevs.sandroid.jwcongregationasignment.models
 
-import org.cadnusdevs.sandroid.jwcongregationasignment.DateUtils
-import java.util.Calendar
+import org.cadnusdevs.sandroid.jwcongregationasignment.DateUtils.*
 
 class MeetingDay(val day: Int?,
                  val month: Int?,
@@ -17,9 +16,10 @@ class MeetingDay(val day: Int?,
                  ) {
 
     companion object {
-        fun generateDefaultList(days: Int, initialDate: DateUtils.ZeroBasedDate) : ArrayList<MeetingDay>{
+        fun generateDefaultList(days: Int, initialDate: ZeroBasedDate) : ArrayList<MeetingDay>{
+            val meetingDays = arrayOf(WeekDay.Friday, WeekDay.Sunday)
             val sheet = ArrayList<MeetingDay>()
-            var currentDate = initialDate.currentDateOrNext(Calendar.FRIDAY, Calendar.SUNDAY)
+            var currentDate = initialDate.currentDateOrNext(*meetingDays)
             for(i in 1..days) {
                 val groupId = (i - 1) % 4 + 1
                 sheet.add(MeetingDay(
@@ -28,7 +28,7 @@ class MeetingDay(val day: Int?,
                     currentDate.year,
                     initialDate.formatMonthYearBr(),null,null,null,null,null,null,
                     groupId))
-                currentDate = currentDate.nextDate(Calendar.FRIDAY, Calendar.SUNDAY)
+                currentDate = currentDate.nextDate(*meetingDays)
             }
             return sheet;
         }

@@ -26,6 +26,7 @@ class MeetingDayViewHolder
         val soundSystem: Spinner,
         val cleanGroup: Spinner
     ) : OnItemSelectedListener {
+    private var populatingSpinners: Boolean = false
     lateinit var meetingDayOriginalValue: MeetingDay
     private var onChangeListener: (() -> Unit?)? = null
     private var _dateZeroBased: DateUtils.ZeroBasedDate? = null
@@ -42,7 +43,9 @@ class MeetingDayViewHolder
         }
 
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-        this.onChangeListener?.invoke()
+        if(!populatingSpinners){
+            onChangeListener?.invoke()
+        }
     }
 
     override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -57,7 +60,7 @@ class MeetingDayViewHolder
         }
     }
 
-    private fun spinners() = arrayOf(this.usherA,usherB, micA, micB, computer, soundSystem)
+    private fun spinners() = arrayOf(usherA,usherB, micA, micB, computer, soundSystem)
 
     private fun generateSpinnerItems(brothers: List<Brother>): List<Brother> {
         val options = ArrayList<Brother>()
@@ -68,9 +71,11 @@ class MeetingDayViewHolder
     }
 
     fun setValue(meetingDay: MeetingDay) {
+        populatingSpinners = true
         meetingDayOriginalValue = meetingDay
         cleanGroup.setSelection((cleanGroup.adapter as ArrayAdapter<String>).getPosition("${meetingDay.cleanGroupId}"))
-        meetingDay.day?.let { this.setDate(meetingDay.year!!, meetingDay.month!!, meetingDay.day) };
+        meetingDay.day?.let { this.setDate(meetingDay.year!!, meetingDay.month!!, meetingDay.day) }
+        populatingSpinners = false
     }
 
     private fun setDate(year: Int, month: Int, day: Int) {
