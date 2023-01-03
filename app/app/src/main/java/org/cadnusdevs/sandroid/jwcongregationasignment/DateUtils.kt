@@ -36,8 +36,8 @@ class DateUtils {
             this.dayOfMonth = date.get(Calendar.DAY_OF_MONTH)
         }
 
-        private val PtBRLocale = Locale("pt", "BR")
-        private val EsESLocale = Locale("es", "ES")
+        private val ptBRLocale = Locale("pt", "BR")
+        private val esESLocale = Locale("es", "ES")
         fun formatPtBr(): String {
             val dayString = if(dayOfMonth < 10) "0$dayOfMonth" else dayOfMonth
             val monthInt = monthZeroBased+1
@@ -46,11 +46,11 @@ class DateUtils {
         }
         private fun format(language: SupportedLanguages, pattern: String): String {
             val locale = when(language){
-                SupportedLanguages.Es-> EsESLocale
-                SupportedLanguages.Pt-> PtBRLocale
+                SupportedLanguages.Es-> esESLocale
+                SupportedLanguages.Pt-> ptBRLocale
             }
             val sdf = SimpleDateFormat("dd/MM/yyyy", locale)
-            val myDate: Date = sdf.parse(this.formatPtBr())
+            val myDate: Date = sdf.parse(this.formatPtBr())!!
             sdf.applyPattern(pattern)
             return sdf.format(myDate)
                 .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
@@ -74,13 +74,9 @@ class DateUtils {
             return date
         }
 
-        fun monthAsString(languages: SupportedLanguages): String {
-            return this.format(languages, "MMMM")
-        }
+        fun monthAsString(languages: SupportedLanguages) = this.format(languages, "MMMM")
 
-        fun formatMonthYearBr(): String {
-            return this.format(SupportedLanguages.Pt, "MM/yyyy")
-        }
+        fun formatMonthYearBr() = this.format(SupportedLanguages.Pt, "MM/yyyy")
 
         private fun getNextDateFromCalendar(calendar: Calendar, vararg calendarWeekDays: WeekDay): ZeroBasedDate {
             while (!calendarWeekDays.contains(WeekDay.from(calendar))){
@@ -98,11 +94,13 @@ class DateUtils {
         fun currentDateOrNext(vararg calendarWeekDays: WeekDay): ZeroBasedDate {
             val calendar = toCalendar()
             return if(calendarWeekDays.contains(WeekDay.from(calendar)))
-                this
+                clone()
             else{
                 getNextDateFromCalendar(calendar, *calendarWeekDays)
             }
         }
+
+        private fun clone() = ZeroBasedDate(year, monthZeroBased, dayOfMonth)
     }
 
     companion object{

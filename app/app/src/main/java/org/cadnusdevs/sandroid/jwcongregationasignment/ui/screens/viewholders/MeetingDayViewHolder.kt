@@ -34,6 +34,7 @@ class MeetingDayViewHolder
 
     val setListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
         this.setDate(year, month, day)
+        onChangeListener?.invoke()
     }
 
     var brothers: List<Brother> = ArrayList()

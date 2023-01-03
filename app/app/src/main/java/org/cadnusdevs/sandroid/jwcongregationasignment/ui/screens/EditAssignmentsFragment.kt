@@ -12,6 +12,7 @@ import org.cadnusdevs.sandroid.jwcongregationasignment.dbMock.Companion.brothers
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.Brother
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.MeetingDay
 import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.BrotherRepository
+import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.MeetingDayRepository
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.adapters.MeetingDayArrayAdapter
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.shared.BaseFragment
 
@@ -19,11 +20,12 @@ import org.cadnusdevs.sandroid.jwcongregationasignment.ui.shared.BaseFragment
 // template: R.layout.fragment_edit_asignations
 class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange {
 
+    private lateinit var meetingDayRepository: MeetingDayRepository
     private lateinit var month: DateUtils.ZeroBasedDate
     private lateinit var statsButton: Button
     private lateinit var listViewAdapter: MeetingDayArrayAdapter
     private lateinit var lisView: ListView
-    private lateinit var repository: BrotherRepository
+    private lateinit var brotherRepository: BrotherRepository
     private val brotherVersusDates = HashMap<String, HashMap<Int, String>>()
 
     override fun getTemplate() = R.layout.fragment_edit_asignations
@@ -31,10 +33,14 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
     override fun configureLayout(view: View?) {
         month = DateUtils.firstDayNextMonth()
         setTitle();
-        this.repository = BrotherRepository(requireActivity())
-        var sheet = MeetingDay.generateDefaultList(10, month)
+        brotherRepository = BrotherRepository(requireActivity())
+        meetingDayRepository = MeetingDayRepository()
+        var sheet = ArrayList(meetingDayRepository.getAllByMonthYear(month.formatMonthYearBr()))
+        if(sheet.isEmpty()){
+            sheet.addAll(MeetingDay.generateDefaultList(10, month))
+        }
         lisView = q.find<ListView>(R.id.meetings_list_view)!!
-        brothers = this.repository.selectAll() as ArrayList<Brother>
+        brothers = this.brotherRepository.selectAll() as ArrayList<Brother>
         listViewAdapter = MeetingDayArrayAdapter(requireActivity(), month.formatMonthYearBr(), sheet, brothers)
         lisView.adapter = listViewAdapter
         statsButton = q.find<Button>(R.id.stats_btn)!!
@@ -72,6 +78,7 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
     }
 
     override fun onChange(days: List<MeetingDay>) {
+        meetingDayRepository.saveAll(days)
         println(days)
         generateStatistics(days)
     }
