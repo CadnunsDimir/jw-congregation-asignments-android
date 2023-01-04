@@ -24,7 +24,7 @@ class BrotherRepository (ctx: Context){
         val db = dbHelper.writableDatabase
         val selection = "${BaseColumns._ID} LIKE ?"
         val selectionArgs = arrayOf(brother.id.toString())
-        var count = db.update(
+        db.update(
             brotherEntry.TABLE_NAME,
             buildDbValues(brother),
             selection,
@@ -35,7 +35,7 @@ class BrotherRepository (ctx: Context){
         val db = dbHelper.writableDatabase
         val selection = "${BaseColumns._ID} LIKE ?"
         val selectionArgs = arrayOf(brother.id.toString())
-        db.delete(brotherEntry.TABLE_NAME, selection, selectionArgs);
+        db.delete(brotherEntry.TABLE_NAME, selection, selectionArgs)
     }
 
     fun selectAll(): List<Brother> {

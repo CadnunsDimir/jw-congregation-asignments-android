@@ -1,11 +1,13 @@
 package org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens
 
+import android.graphics.Color
 import android.view.View
 import android.widget.Button
 import android.widget.ListView
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
+import androidx.core.view.setPadding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.cadnusdevs.sandroid.jwcongregationasignment.DateUtils
 import org.cadnusdevs.sandroid.jwcongregationasignment.R
@@ -27,11 +29,12 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
     private lateinit var floating: FloatingActionButton
     private lateinit var meetingDayRepository: MeetingDayRepository
     private lateinit var month: DateUtils.ZeroBasedDate
-    private lateinit var statsButton: Button
+    private lateinit var statsButton: FloatingActionButton
     private lateinit var listViewAdapter: MeetingDayArrayAdapter
     private lateinit var lisView: ListView
     private lateinit var brotherRepository: BrotherRepository
     private val brotherVersusDates = HashMap<String, HashMap<Int, String>>()
+    private val tableRowDates = "fechas"
 
     override fun getTemplate() = R.layout.fragment_edit_asignations
 
@@ -39,19 +42,21 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
         month = DateUtils.firstDayNextMonth()
         setTitle();
         brotherRepository = BrotherRepository(requireActivity())
-        meetingDayRepository = MeetingDayRepository()
+        brothers = this.brotherRepository.selectAll() as ArrayList<Brother>
+        meetingDayRepository = MeetingDayRepository(requireActivity(), brothers)
         val meetings = ArrayList(meetingDayRepository.getAllByMonthYear(month.formatMonthYearBr()))
         if(meetings.isEmpty()){
             meetings.addAll(MeetingDay.generateDefaultList(10, month))
             meetingDayRepository.saveAll(meetings)
         }
         lisView = q.find<ListView>(R.id.meetings_list_view)!!
-        brothers = this.brotherRepository.selectAll() as ArrayList<Brother>
+
         listViewAdapter = MeetingDayArrayAdapter(requireActivity(), month.formatMonthYearBr(), meetings, brothers)
         lisView.adapter = listViewAdapter
-        statsButton = q.find<Button>(R.id.stats_btn)!!
+        statsButton = q.find<FloatingActionButton>(R.id.fab_stats)!!
         floating = q.find<FloatingActionButton>(R.id.fab)!!
         printService = PrintService(requireActivity())
+        generateStatistics(meetings)
     }
 
     private fun setTitle() {
@@ -68,20 +73,7 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
     override fun setEvents() {
         listViewAdapter.setOnChange(this)
         statsButton.setOnClickListener{
-            val table = TableLayout(requireActivity())
-            brotherVersusDates.forEach { (brother, hashmap) ->
-                run {
-                    val row = TableRow(requireActivity())
-                    row.addView(q.Text(brother))
-                    hashmap.forEach { (_, assignment) ->
-                        val text = q.Text(assignment)
-                        row.addView(text)
-                        text.layoutParams.width = 50
-                    }
-                    table.addView(row)
-                }
-            }
-            q.openDialog(table)
+            StatsDialog.open(q, requireActivity(), brotherVersusDates, tableRowDates)
         }
         floating.setOnClickListener{
             val meetings = meetingDayRepository.getAllByMonthYear(month.formatMonthYearBr())
@@ -92,12 +84,12 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
     override fun onChange(meeting: MeetingDay) {
         meetingDayRepository.update(meeting)
         val days = meetingDayRepository.getAllByMonthYear(month.formatMonthYearBr())
-        println(days)
         generateStatistics(days)
     }
 
     private fun generateStatistics(days: List<MeetingDay>) {
         brotherVersusDates.clear()
+        brotherVersusDates[tableRowDates] = HashMap<Int, String>()
         brothers.forEach { brother ->
             run {
                 val itens = HashMap<Int, String>()
@@ -107,6 +99,7 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
         }
         days.forEach {
             val position = days.indexOf(it)
+            brotherVersusDates[tableRowDates]?.set(position, it.day.toString())
             setOnMap(it.usherA, brotherVersusDates, position, "A")
             setOnMap(it.usherB, brotherVersusDates, position, "A")
             setOnMap(it.microphoneA, brotherVersusDates, position, "M")

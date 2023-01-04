@@ -26,7 +26,7 @@ class MeetingDayViewHolder
         val soundSystem: Spinner,
         val cleanGroup: Spinner
     ) : OnItemSelectedListener {
-    lateinit var meetingDayOriginalValue: MeetingDay
+    var meetingDayId: Long = 0
     private var onChangeListener: (() -> Unit?)? = null
     private var _dateZeroBased: DateUtils.ZeroBasedDate? = null
     private lateinit var q: QueryViews
@@ -74,7 +74,7 @@ class MeetingDayViewHolder
     }
 
     fun setValue(meetingDay: MeetingDay) {
-        meetingDayOriginalValue = meetingDay
+        meetingDayId = meetingDay.id
         cleanGroup.setSelection((cleanGroup.adapter as ArrayAdapter<String>).getPosition("${meetingDay.cleanGroupId}"))
         meetingDay.day?.let { this.setDate(meetingDay.year!!, meetingDay.month!!, meetingDay.day) }
         setBrother(usherA, meetingDay.usherA)
@@ -125,6 +125,7 @@ class MeetingDayViewHolder
             q.getSpinnerSelectedItem<Brother>(computer),
             q.getSpinnerSelectedItem<Brother>(soundSystem),
             (cleanGroup.selectedItem as String).toInt(),
+            meetingDayId
         )
     }
 

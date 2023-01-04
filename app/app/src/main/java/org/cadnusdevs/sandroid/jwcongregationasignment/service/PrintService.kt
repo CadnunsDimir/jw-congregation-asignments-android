@@ -18,7 +18,7 @@ class PrintService(private val activity: Context) {
     private val printJobs = ArrayList<PrintJob>()
     private var mWebView: WebView? = null
 
-    public fun print(title: String, meetings: List<MeetingDay>) {
+    fun print(title: String, meetings: List<MeetingDay>) {
         val webView = WebView(activity)
         webView.webViewClient = object : WebViewClient() {
 

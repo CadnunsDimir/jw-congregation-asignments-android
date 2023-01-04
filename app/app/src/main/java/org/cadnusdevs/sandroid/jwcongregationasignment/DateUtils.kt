@@ -28,8 +28,6 @@ class DateUtils {
         }
     }
 
-
-
     class ZeroBasedDate(var year: Int, var monthZeroBased: Int, var dayOfMonth: Int) {
         constructor() : this(Calendar.getInstance())
 
@@ -112,6 +110,12 @@ class DateUtils {
         }
 
         private fun clone() = ZeroBasedDate(year, monthZeroBased, dayOfMonth)
+        fun asTimeStamp(): Long {
+            return toCalendar().timeInMillis
+        }
+        companion object{
+            fun from(calendar:Calendar) = ZeroBasedDate(calendar)
+        }
     }
 
     companion object{
@@ -121,6 +125,12 @@ class DateUtils {
             month.dayOfMonth = 1
             month.addMonth(1)
             return month
+        }
+
+        fun toDateFromTimeStamp(timeStamp: Long): ZeroBasedDate {
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = timeStamp
+            return ZeroBasedDate.from(calendar)
         }
     }
 }

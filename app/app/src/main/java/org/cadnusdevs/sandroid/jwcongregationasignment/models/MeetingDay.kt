@@ -12,7 +12,8 @@ class MeetingDay(val day: Int?,
                  val microphoneB: Brother?,
                  val computer: Brother?,
                  val soundSystem: Brother?,
-                 val cleanGroupId: Int
+                 val cleanGroupId: Int,
+                 var id: Long
                  ) {
     val date
     get(): ZeroBasedDate {
@@ -30,7 +31,7 @@ class MeetingDay(val day: Int?,
                     currentDate.monthZeroBased,
                     currentDate.year,
                     initialDate.formatMonthYearBr(),null,null,null,null,null,null,
-                    groupId))
+                    groupId,0))
                 currentDate = currentDate.nextDate(*meetingDays)
             }
             return sheet;

@@ -33,6 +33,18 @@ object DbContracts {
         const val COLUMN_COMPUTER_BROTHER_ID = "computer_brother_id"
         const val COLUMN_SOUND_SYSTEM_BROTHER_ID = "sound_system_brother_id"
         const val COLUMN_CLEANING_GROUP_ID = "cleaning_group_id"
+        val columnsList = arrayOf(
+            BaseColumns._ID,
+            COLUMN_DATE,
+            COLUMN_MONTH_YEAR_SHEET,
+            COLUMN_USHER_A_BROTHER_ID,
+            COLUMN_USHER_B_BROTHER_ID,
+            COLUMN_MIC_A_BROTHER_ID,
+            COLUMN_MIC_B_BROTHER_ID,
+            COLUMN_COMPUTER_BROTHER_ID,
+            COLUMN_SOUND_SYSTEM_BROTHER_ID,
+            COLUMN_CLEANING_GROUP_ID
+        )
     }
 
     const val CREATE_BROTHER_ENTRY =
@@ -52,7 +64,10 @@ object DbContracts {
             "${MeetingDayEntry.COLUMN_USHER_A_BROTHER_ID} ${ColumnType.INT}," +
             "${MeetingDayEntry.COLUMN_USHER_B_BROTHER_ID} ${ColumnType.INT}," +
             "${MeetingDayEntry.COLUMN_MIC_A_BROTHER_ID} ${ColumnType.INT}," +
-            "${MeetingDayEntry.COLUMN_MIC_B_BROTHER_ID} ${ColumnType.INT})"
+            "${MeetingDayEntry.COLUMN_MIC_B_BROTHER_ID} ${ColumnType.INT}," +
+            "${MeetingDayEntry.COLUMN_COMPUTER_BROTHER_ID} ${ColumnType.INT}," +
+            "${MeetingDayEntry.COLUMN_SOUND_SYSTEM_BROTHER_ID} ${ColumnType.INT}," +
+            "${MeetingDayEntry.COLUMN_CLEANING_GROUP_ID} ${ColumnType.INT})"
 
     const val SQL_CREATE_ENTRIES = "$CREATE_BROTHER_ENTRY $CREATE_MEETING_DAY_ENTRY"
 
