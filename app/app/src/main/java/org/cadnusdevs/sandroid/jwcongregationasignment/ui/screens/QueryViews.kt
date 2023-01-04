@@ -39,12 +39,6 @@ class QueryViews(private var _view: View) {
         button?.setOnClickListener(action)
     }
 
-    fun  <T> setSpinnerItems(spinner:Spinner, items: List<T>, toStringResolver: (item: T)-> String) {
-        val adapter = ArrayAdapter(spinner.context, android.R.layout.simple_spinner_item, SpinnerItem.list(items, toStringResolver))
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = adapter
-    }
-
     fun showIf(id: Int, value: Boolean) {
         find<View>(id)?.visibility = if(value) View.VISIBLE else View.GONE
     }
@@ -70,6 +64,12 @@ class QueryViews(private var _view: View) {
         find<View>(id)?.setBackgroundColor(Color.parseColor(hexColor))
     }
 
+    fun  <T> setSpinnerItems(spinner:Spinner, items: List<T>, toStringResolver: (item: T)-> String) {
+        val adapter = ArrayAdapter(spinner.context, android.R.layout.simple_spinner_item, SpinnerItem.list(items, toStringResolver))
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+    }
+
     fun <T> getSpinnerSelectedItem(spinner: Spinner): T {
         return (spinner.selectedItem as SpinnerItem<T>).item
     }
@@ -87,4 +87,6 @@ class QueryViews(private var _view: View) {
         textView.text = text
         return textView
     }
+
+
 }

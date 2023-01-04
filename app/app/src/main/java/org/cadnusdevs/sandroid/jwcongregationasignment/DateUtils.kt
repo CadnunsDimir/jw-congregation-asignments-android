@@ -20,6 +20,9 @@ class DateUtils {
         companion object{
             private val types = values().associateBy { it.value }
 
+            val midWeekDays = arrayOf(Monday, Tuesday, Wednesday, Thursday, Friday)
+            val weekEndDays = arrayOf(Saturday, Sunday)
+
             fun from(calendar: Calendar): WeekDay? = types[calendar.get(Calendar.DAY_OF_WEEK)]
             fun from(value: Int): WeekDay? = types[value]
         }
@@ -36,6 +39,14 @@ class DateUtils {
             this.dayOfMonth = date.get(Calendar.DAY_OF_MONTH)
         }
 
+        val shortDate: String
+            get() {
+                return format(SupportedLanguages.Pt, "dd/MM")
+            }
+        val weekDay: WeekDay
+            get() {
+                return WeekDay.from(toCalendar())!!
+            }
         private val ptBRLocale = Locale("pt", "BR")
         private val esESLocale = Locale("es", "ES")
         fun formatPtBr(): String {

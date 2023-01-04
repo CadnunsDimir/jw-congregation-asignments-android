@@ -26,7 +26,6 @@ class MeetingDayViewHolder
         val soundSystem: Spinner,
         val cleanGroup: Spinner
     ) : OnItemSelectedListener {
-    private var populatingSpinners: Boolean = false
     lateinit var meetingDayOriginalValue: MeetingDay
     private var onChangeListener: (() -> Unit?)? = null
     private var _dateZeroBased: DateUtils.ZeroBasedDate? = null
@@ -44,9 +43,7 @@ class MeetingDayViewHolder
         }
 
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-        if(!populatingSpinners){
-            onChangeListener?.invoke()
-        }
+        onChangeListener?.invoke()
     }
 
     override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -65,18 +62,33 @@ class MeetingDayViewHolder
 
     private fun generateSpinnerItems(brothers: List<Brother>): List<Brother> {
         val options = ArrayList<Brother>()
-        val noOption = Brother(0,SPINNER_NO_OPTION_TEXT_PtBR, false, false, false, false)
+        val noOption = Brother(0,SPINNER_NO_OPTION_TEXT_PtBR,
+            canBeUsher = false,
+            canBeMicrophone = false,
+            canBeComputer = false,
+            canBeSoundSystem = false
+        )
         options.add(noOption)
         options.addAll(brothers)
         return options
     }
 
     fun setValue(meetingDay: MeetingDay) {
-        populatingSpinners = true
         meetingDayOriginalValue = meetingDay
         cleanGroup.setSelection((cleanGroup.adapter as ArrayAdapter<String>).getPosition("${meetingDay.cleanGroupId}"))
         meetingDay.day?.let { this.setDate(meetingDay.year!!, meetingDay.month!!, meetingDay.day) }
-        populatingSpinners = false
+        setBrother(usherA, meetingDay.usherA)
+        setBrother(usherB, meetingDay.usherB)
+        setBrother(micA, meetingDay.microphoneA)
+        setBrother(micB, meetingDay.microphoneB)
+        setBrother(computer, meetingDay.computer)
+        setBrother(soundSystem, meetingDay.soundSystem)
+    }
+
+    private fun setBrother(spinner: Spinner, brother: Brother?) {
+        val position = brothers.indexOf(brothers.firstOrNull { x -> x.name == brother?.name })
+        if(position >= 0)
+            spinner.setSelection(position + 1)
     }
 
     private fun setDate(year: Int, month: Int, day: Int) {
@@ -96,8 +108,8 @@ class MeetingDayViewHolder
             val datePicker = DatePickerDialog(editText.context, this.setListener,date.year, date.monthZeroBased, date.dayOfMonth)
             datePicker.show()
         }
-
-        this.spinners().forEach { it.setOnItemSelectedListener(this) }
+        cleanGroup.onItemSelectedListener = this
+        this.spinners().forEach { it.onItemSelectedListener = this }
     }
 
     fun toModel(monthYear: String): MeetingDay {

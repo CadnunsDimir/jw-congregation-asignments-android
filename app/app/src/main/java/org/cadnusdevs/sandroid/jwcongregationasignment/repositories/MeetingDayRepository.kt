@@ -15,6 +15,11 @@ class MeetingDayRepository {
         }
     }
 
+    fun update(meeting: MeetingDay) {
+        val position = list.indexOf(list.first { x-> x.monthYearSheet == meeting.monthYearSheet && x.day == meeting.day && x.month == meeting.month })
+        if(position >= 0) list[position] = meeting
+    }
+
     companion object {
         private val list = ArrayList<MeetingDay>()
     }

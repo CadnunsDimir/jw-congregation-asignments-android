@@ -18,4 +18,31 @@
     <string name="frag_edit_assignments__title">Asignaciones para __Month__/__year__</string>
     <string name="brothers">Hermanos</string>
     <string name="assignments">Asignaciones</string>
+    <string name="submit">imprimir</string>
+
+    <string name="print_css" >
+        table{
+            border-collapse: collapse;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 20px;
+        }
+        table.full-width{
+            width: 100%;
+        }
+        h1{
+            text-align: center;
+        }
+        th, td{
+            border: 1px solid #333;
+            padding: 5px;
+
+        }
+        th{
+            background-color: green;
+        }
+        .grey{
+            background-color: gray !important;
+        }
+    </string>
 </resources>

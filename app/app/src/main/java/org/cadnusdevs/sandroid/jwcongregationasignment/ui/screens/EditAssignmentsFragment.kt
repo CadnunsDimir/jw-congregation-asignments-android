@@ -6,6 +6,7 @@ import android.widget.ListView
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.cadnusdevs.sandroid.jwcongregationasignment.DateUtils
 import org.cadnusdevs.sandroid.jwcongregationasignment.R
 import org.cadnusdevs.sandroid.jwcongregationasignment.dbMock.Companion.brothers
@@ -13,6 +14,7 @@ import org.cadnusdevs.sandroid.jwcongregationasignment.models.Brother
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.MeetingDay
 import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.BrotherRepository
 import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.MeetingDayRepository
+import org.cadnusdevs.sandroid.jwcongregationasignment.service.PrintService
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.adapters.MeetingDayArrayAdapter
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.shared.BaseFragment
 
@@ -20,6 +22,9 @@ import org.cadnusdevs.sandroid.jwcongregationasignment.ui.shared.BaseFragment
 // template: R.layout.fragment_edit_asignations
 class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange {
 
+    private lateinit var titleView: TextView
+    private lateinit var printService: PrintService
+    private lateinit var floating: FloatingActionButton
     private lateinit var meetingDayRepository: MeetingDayRepository
     private lateinit var month: DateUtils.ZeroBasedDate
     private lateinit var statsButton: Button
@@ -35,21 +40,24 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
         setTitle();
         brotherRepository = BrotherRepository(requireActivity())
         meetingDayRepository = MeetingDayRepository()
-        var sheet = ArrayList(meetingDayRepository.getAllByMonthYear(month.formatMonthYearBr()))
-        if(sheet.isEmpty()){
-            sheet.addAll(MeetingDay.generateDefaultList(10, month))
+        val meetings = ArrayList(meetingDayRepository.getAllByMonthYear(month.formatMonthYearBr()))
+        if(meetings.isEmpty()){
+            meetings.addAll(MeetingDay.generateDefaultList(10, month))
+            meetingDayRepository.saveAll(meetings)
         }
         lisView = q.find<ListView>(R.id.meetings_list_view)!!
         brothers = this.brotherRepository.selectAll() as ArrayList<Brother>
-        listViewAdapter = MeetingDayArrayAdapter(requireActivity(), month.formatMonthYearBr(), sheet, brothers)
+        listViewAdapter = MeetingDayArrayAdapter(requireActivity(), month.formatMonthYearBr(), meetings, brothers)
         lisView.adapter = listViewAdapter
         statsButton = q.find<Button>(R.id.stats_btn)!!
+        floating = q.find<FloatingActionButton>(R.id.fab)!!
+        printService = PrintService(requireActivity())
     }
 
     private fun setTitle() {
-        val title =  this.q.find<TextView>(R.id.frag_edit_assignment_title)
+        titleView =  this.q.find<TextView>(R.id.frag_edit_assignment_title)!!
 
-        title?.text = title?.text.toString()
+        titleView?.text = titleView?.text.toString()
             .replace("__Month__", month.monthAsString(DateUtils.SupportedLanguages.Es))
             .replace("__year__", month.year.toString())
     }
@@ -75,10 +83,15 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
             }
             q.openDialog(table)
         }
+        floating.setOnClickListener{
+            val meetings = meetingDayRepository.getAllByMonthYear(month.formatMonthYearBr())
+            printService.print(titleView.text.toString(), meetings)
+        }
     }
 
-    override fun onChange(days: List<MeetingDay>) {
-        meetingDayRepository.saveAll(days)
+    override fun onChange(meeting: MeetingDay) {
+        meetingDayRepository.update(meeting)
+        val days = meetingDayRepository.getAllByMonthYear(month.formatMonthYearBr())
         println(days)
         generateStatistics(days)
     }

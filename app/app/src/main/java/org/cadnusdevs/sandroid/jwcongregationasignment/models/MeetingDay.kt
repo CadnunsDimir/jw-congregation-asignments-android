@@ -14,7 +14,10 @@ class MeetingDay(val day: Int?,
                  val soundSystem: Brother?,
                  val cleanGroupId: Int
                  ) {
-
+    val date
+    get(): ZeroBasedDate {
+        return ZeroBasedDate(year!!, month!!, day!!)
+    }
     companion object {
         fun generateDefaultList(days: Int, initialDate: ZeroBasedDate) : ArrayList<MeetingDay>{
             val meetingDays = arrayOf(WeekDay.Friday, WeekDay.Sunday)

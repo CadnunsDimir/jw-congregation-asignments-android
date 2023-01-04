@@ -14,7 +14,7 @@ class MeetingDayArrayAdapter(private val activity: Activity, private val monthYe
     : ArrayAdapter<MeetingDay>(activity, 0,meetings) {
 
     private var onChangeListener: OnChange? = null
-    val itens: ArrayList<MeetingDayViewHolder?> = ArrayList(this.meetings.map { null })
+//    val itens: ArrayList<MeetingDayViewHolder?> = ArrayList(this.meetings.map { null })
 
     override fun getCount(): Int = meetings.size
 
@@ -29,20 +29,14 @@ class MeetingDayArrayAdapter(private val activity: Activity, private val monthYe
         holder.brothers = this.brothers
         holder.setValue(getItem(position))
         holder.setOnChange{
-            onChangeListener?.onChange(this.meetings.map {
-                val targetHolder = this.itens.filter { meetingDayViewHolder -> meetingDayViewHolder?.meetingDayOriginalValue == it }
-                if(targetHolder.isNotEmpty()) {
-                    return@map targetHolder.first()?.toModel(monthYear) ?: it
-                }
-                return@map it
-            })
+            var meeting = holder.toModel(monthYear)
+            onChangeListener?.onChange(meeting)
         }
-        this.itens[position] = holder
         return view
     }
 
     interface OnChange{
-        fun onChange(days: List<MeetingDay>)
+        fun onChange(meeting: MeetingDay)
     }
 
     fun setOnChange(listener: OnChange) {
