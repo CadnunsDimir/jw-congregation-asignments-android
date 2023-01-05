@@ -9,6 +9,8 @@ import android.widget.TableRow
 import android.widget.TextView
 import androidx.core.view.setPadding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import org.cadnusdevs.sandroid.jwcongregationasignment.DateUtils
 import org.cadnusdevs.sandroid.jwcongregationasignment.R
 import org.cadnusdevs.sandroid.jwcongregationasignment.dbMock.Companion.brothers
@@ -71,6 +73,8 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
     }
 
     override fun setEvents() {
+        val tabWeekEnd = q.find<View>(R.id.tab_weekend_layout)
+        val tabSpeeches = q.find<View>(R.id.tab_speeches_layout)
         listViewAdapter.setOnChange(this)
         statsButton.setOnClickListener{
             StatsDialog.open(q, requireActivity(), brotherVersusDates, tableRowDates)
@@ -79,6 +83,32 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
             val meetings = meetingDayRepository.getAllByMonthYear(month.formatMonthYearBr())
             printService.print(titleView.text.toString(), meetings)
         }
+
+        val listener = object : OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                if(tab?.text == "Mecânicas") {
+                    tabWeekEnd?.visibility = View.GONE
+                    tabSpeeches?.visibility = View.GONE
+                    lisView.visibility = View.VISIBLE
+                }
+                if(tab?.text == "Fin de Semana") {
+                    tabWeekEnd?.visibility = View.VISIBLE
+                    tabSpeeches?.visibility = View.GONE
+                    lisView.visibility = View.GONE
+                }
+                if(tab?.text == "Discursos") {
+                    tabWeekEnd?.visibility = View.GONE
+                    tabSpeeches?.visibility = View.VISIBLE
+                    lisView.visibility = View.GONE
+                }
+            }
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+        }
+        q.find<TabLayout>(R.id.tabLayout)?.addOnTabSelectedListener(listener)
     }
 
     override fun onChange(meeting: MeetingDay) {
