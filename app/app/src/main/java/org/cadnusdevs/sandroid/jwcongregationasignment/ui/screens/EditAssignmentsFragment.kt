@@ -16,10 +16,12 @@ import org.cadnusdevs.sandroid.jwcongregationasignment.R
 import org.cadnusdevs.sandroid.jwcongregationasignment.dbMock.Companion.brothers
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.Brother
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.MeetingDay
+import org.cadnusdevs.sandroid.jwcongregationasignment.models.SpeechesArrangement
 import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.BrotherRepository
 import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.MeetingDayRepository
 import org.cadnusdevs.sandroid.jwcongregationasignment.service.PrintService
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.adapters.MeetingDayArrayAdapter
+import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.adapters.SpeechTableAdapter
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.adapters.WeekendTableAdapter
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.shared.BaseFragment
 
@@ -59,8 +61,17 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
         floating = q.find<FloatingActionButton>(R.id.fab)!!
         printService = PrintService(requireActivity())
         generateStatistics(meetings)
+        defineTabWeekend(view,meetings)
+    }
+
+    private fun defineTabWeekend(view: View?, meetings: List<MeetingDay>) {
         WeekendTableAdapter(view, R.id.tab_weekend_table)
-            .addRows(month.monthZeroBased, meetings)
+            .setDataFromMeetingDayList(month.monthZeroBased, meetings)
+            .addRows()
+        val speechesArrangement = SpeechesArrangement.fromWeekDayList("A Definir", month.monthZeroBased, meetings)
+        SpeechTableAdapter(view, R.id.speeches_table)
+            .setData(speechesArrangement.speechesDuringMonth)
+            .addRows()
     }
 
     private fun setTitle() {
@@ -76,7 +87,6 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
 
     override fun setEvents() {
         val tabWeekEnd = q.find<View>(R.id.tab_weekend_layout)
-        val tabSpeeches = q.find<View>(R.id.tab_speeches_layout)
         listViewAdapter.setOnChange(this)
         statsButton.setOnClickListener{
             StatsDialog.open(q, requireActivity(), brotherVersusDates, tableRowDates)
@@ -86,21 +96,16 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
             printService.print(titleView.text.toString(), meetings)
         }
 
+        tabWeekEnd?.visibility = View.GONE
+        lisView.visibility = View.VISIBLE
         val listener = object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 if(tab?.text == "Mecânicas") {
                     tabWeekEnd?.visibility = View.GONE
-                    tabSpeeches?.visibility = View.GONE
                     lisView.visibility = View.VISIBLE
                 }
                 if(tab?.text == "Fin de Semana") {
                     tabWeekEnd?.visibility = View.VISIBLE
-                    tabSpeeches?.visibility = View.GONE
-                    lisView.visibility = View.GONE
-                }
-                if(tab?.text == "Discursos") {
-                    tabWeekEnd?.visibility = View.GONE
-                    tabSpeeches?.visibility = View.VISIBLE
                     lisView.visibility = View.GONE
                 }
             }

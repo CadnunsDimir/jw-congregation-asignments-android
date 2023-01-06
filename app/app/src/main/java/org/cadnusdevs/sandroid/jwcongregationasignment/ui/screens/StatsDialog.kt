@@ -36,19 +36,13 @@ class StatsDialog {
             val titleView = q.Text(headerTitle, textSize)
             titleView.setPadding(10,5,10,5)
             row.addView(titleView)
-            setRowColor(row, indexLine)
+            q.setRowColor(row, indexLine)
             header?.forEach { (_, assignment) ->
                 val text = q.Text(assignment, textSize)
                 row.addView(text)
                 text.setPadding(10,5,10,5)
             }
             table.addView(row)
-        }
-
-        private fun setRowColor(row: TableRow, indexLine: Int) {
-            if(indexLine % 2 == 1){
-                row.setBackgroundColor(Color.parseColor("#333333"))
-            }
         }
     }
 }

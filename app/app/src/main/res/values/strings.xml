@@ -47,4 +47,6 @@
         }
     </string>
     <string name="see_statistics">ver estatísticas</string>
+    <string name="invited_congregation_label_text">Estaremos en arreglo con la congregacion</string>
+    <string name="speeches_arrangement_h3">Arreglo de Discursos</string>
 </resources>

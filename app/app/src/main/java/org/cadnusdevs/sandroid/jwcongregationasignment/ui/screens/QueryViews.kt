@@ -1,21 +1,20 @@
 package org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens
 
-import android.app.ActionBar.LayoutParams
-import android.app.Activity
+import android.R.attr.left
+import android.R.attr.right
 import android.app.AlertDialog
 import android.graphics.Color
 import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.style.StyleSpan
-import android.text.style.UnderlineSpan
 import android.util.TypedValue
 import android.view.View
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import org.cadnusdevs.sandroid.jwcongregationasignment.R
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.SpinnerItem
+
 
 @Suppress("UNCHECKED_CAST")
 class QueryViews(private var _view: View) {
@@ -105,4 +104,18 @@ class QueryViews(private var _view: View) {
     }
 
     fun tableRow() = TableRow(_view.context)
+    fun setRowColor(row: TableRow, indexLine: Int) {
+        if(indexLine % 2 == 1){
+            row.setBackgroundColor(Color.parseColor("#333333"))
+        }
+    }
+
+    fun setMargin(table: TableLayout?, tableMargin: Int) {
+        val lp = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        lp.setMargins(tableMargin, tableMargin, tableMargin, tableMargin)
+        table?.layoutParams = lp
+    }
 }
