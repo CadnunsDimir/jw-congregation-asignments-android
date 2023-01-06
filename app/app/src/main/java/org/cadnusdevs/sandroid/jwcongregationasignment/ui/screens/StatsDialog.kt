@@ -8,9 +8,12 @@ import androidx.core.view.setPadding
 
 class StatsDialog {
     companion object{
+        private val textSize = 14F
+
         fun open(q: QueryViews, activity:Activity, brotherVersusDates: HashMap<String, HashMap<Int, String>>, tableRowDates: String){
             val table = TableLayout(activity)
             table.setPadding(25)
+            table?.isStretchAllColumns = true
             val header = brotherVersusDates[tableRowDates]
             var indexLine = 1
 
@@ -30,14 +33,13 @@ class StatsDialog {
         private fun addRow(q: QueryViews, activity:Activity, headerTitle: String, table: TableLayout, header: HashMap<Int, String>?, indexLine: Int) {
             val row = TableRow(activity)
             row.setPadding(10,5,10,5)
-            val titleView = q.Text(headerTitle)
+            val titleView = q.Text(headerTitle, textSize)
             titleView.setPadding(10,5,10,5)
             row.addView(titleView)
             setRowColor(row, indexLine)
             header?.forEach { (_, assignment) ->
-                val text = q.Text(assignment)
+                val text = q.Text(assignment, textSize)
                 row.addView(text)
-                text.layoutParams.width = 50
                 text.setPadding(10,5,10,5)
             }
             table.addView(row)
