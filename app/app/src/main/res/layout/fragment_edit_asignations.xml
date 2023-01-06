@@ -71,11 +71,10 @@
         app:layout_constraintTop_toBottomOf="@+id/tabLayout"
         android:id="@+id/tab_weekend_layout"
         >
-        <TextView
+        <TableLayout
+            android:id="@+id/tab_weekend_table"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="tab2"
-            />
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
     <LinearLayout

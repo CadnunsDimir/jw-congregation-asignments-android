@@ -20,6 +20,7 @@ import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.BrotherRepos
 import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.MeetingDayRepository
 import org.cadnusdevs.sandroid.jwcongregationasignment.service.PrintService
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.adapters.MeetingDayArrayAdapter
+import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.adapters.WeekendTableAdapter
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.shared.BaseFragment
 
 
@@ -52,13 +53,14 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
             meetingDayRepository.saveAll(meetings)
         }
         lisView = q.find<ListView>(R.id.meetings_list_view)!!
-
         listViewAdapter = MeetingDayArrayAdapter(requireActivity(), month.formatMonthYearBr(), meetings, brothers)
         lisView.adapter = listViewAdapter
         statsButton = q.find<FloatingActionButton>(R.id.fab_stats)!!
         floating = q.find<FloatingActionButton>(R.id.fab)!!
         printService = PrintService(requireActivity())
         generateStatistics(meetings)
+        WeekendTableAdapter(view, R.id.tab_weekend_table)
+            .addRows(month.monthZeroBased, meetings)
     }
 
     private fun setTitle() {

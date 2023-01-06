@@ -1,8 +1,14 @@
 package org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens
 
+import android.app.ActionBar.LayoutParams
 import android.app.Activity
 import android.app.AlertDialog
 import android.graphics.Color
+import android.graphics.Typeface
+import android.text.SpannableString
+import android.text.style.StyleSpan
+import android.text.style.UnderlineSpan
+import android.util.TypedValue
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +17,7 @@ import androidx.fragment.app.FragmentActivity
 import org.cadnusdevs.sandroid.jwcongregationasignment.R
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.SpinnerItem
 
+@Suppress("UNCHECKED_CAST")
 class QueryViews(private var _view: View) {
 
     fun <T> find(id: Int): T? { return this._view?.findViewById(id) }
@@ -82,11 +89,20 @@ class QueryViews(private var _view: View) {
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
-    fun Text(text: String, width: Int = 5): TextView {
+    fun Text(text: String = "", textSize: Float = 18F): TextView {
         val textView = TextView(_view.context)
         textView.text = text
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize)
         return textView
     }
 
+    fun boldText(text: String): View? {
+        val view = Text()
+        val spanString = SpannableString(text)
+        spanString.setSpan(StyleSpan(Typeface.BOLD), 0, spanString.length, 0)
+        view.text = spanString
+        return view
+    }
 
+    fun tableRow() = TableRow(_view.context)
 }
