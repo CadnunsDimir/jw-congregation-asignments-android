@@ -17,6 +17,7 @@ import org.cadnusdevs.sandroid.jwcongregationasignment.dbMock.Companion.brothers
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.Brother
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.MeetingDay
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.SpeechesArrangement
+import org.cadnusdevs.sandroid.jwcongregationasignment.models.Weekend
 import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.BrotherRepository
 import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.MeetingDayRepository
 import org.cadnusdevs.sandroid.jwcongregationasignment.service.PrintService
@@ -65,12 +66,12 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
     }
 
     private fun defineTabWeekend(view: View?, meetings: List<MeetingDay>) {
-        WeekendTableAdapter(view, R.id.tab_weekend_table)
-            .setDataFromMeetingDayList(month.monthZeroBased, meetings)
+        val weekends = Weekend.listFrom(month.monthZeroBased, meetings)
+        WeekendTableAdapter(view, R.id.tab_weekend_table, brothers)
+            .setData(weekends)
             .addRows()
-        val speechesArrangement = SpeechesArrangement.fromWeekDayList("A Definir", month.monthZeroBased, meetings)
         SpeechTableAdapter(view, R.id.speeches_table)
-            .setData(speechesArrangement.speechesDuringMonth)
+            .setData(weekends)
             .addRows()
     }
 

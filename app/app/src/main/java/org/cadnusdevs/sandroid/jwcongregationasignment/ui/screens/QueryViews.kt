@@ -1,8 +1,7 @@
 package org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens
 
-import android.R.attr.left
-import android.R.attr.right
 import android.app.AlertDialog
+import android.app.Dialog
 import android.graphics.Color
 import android.graphics.Typeface
 import android.text.SpannableString
@@ -13,6 +12,8 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import org.cadnusdevs.sandroid.jwcongregationasignment.R
+import org.cadnusdevs.sandroid.jwcongregationasignment.SPINNER_NO_OPTION_TEXT_PtBR
+import org.cadnusdevs.sandroid.jwcongregationasignment.models.Brother
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.SpinnerItem
 
 
@@ -71,6 +72,7 @@ class QueryViews(private var _view: View) {
     }
 
     fun  <T> setSpinnerItems(spinner:Spinner, items: List<T>, toStringResolver: (item: T)-> String) {
+
         val adapter = ArrayAdapter(spinner.context, android.R.layout.simple_spinner_item, SpinnerItem.list(items, toStringResolver))
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
@@ -80,11 +82,12 @@ class QueryViews(private var _view: View) {
         return (spinner.selectedItem as SpinnerItem<T>).item
     }
 
-    fun openDialog(content: View) {
+    fun openDialog(content: View): Dialog {
         _view.context ?.let {
-            // Use the Builder class for convenient dialog construction
             val builder = AlertDialog.Builder(it)
-            builder.setView(content).create().show()
+            var dialog = builder.setView(content).create()
+            dialog.show()
+            return dialog
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
@@ -117,5 +120,26 @@ class QueryViews(private var _view: View) {
         )
         lp.setMargins(tableMargin, tableMargin, tableMargin, tableMargin)
         table?.layoutParams = lp
+    }
+    fun setSelectedBrother(spinner: Spinner, brothers: List<Brother>, brother: Brother?) {
+        val position = brothers.indexOf(brothers.firstOrNull { x -> x.name == brother?.name })
+        if(position >= 0)
+            spinner.setSelection(position + 1)
+    }
+    fun setBrotherSpinnerItems(spinner: Spinner, brothers: List<Brother>, toStringResolver: (item: Brother)-> String){
+        val items = generateSpinnerItems(brothers)
+        setSpinnerItems(spinner,items,toStringResolver)
+    }
+    private fun generateSpinnerItems(brothers: List<Brother>): List<Brother> {
+        val options = ArrayList<Brother>()
+        val noOption = Brother(0, SPINNER_NO_OPTION_TEXT_PtBR,
+            canBeUsher = false,
+            canBeMicrophone = false,
+            canBeComputer = false,
+            canBeSoundSystem = false
+        )
+        options.add(noOption)
+        options.addAll(brothers)
+        return options
     }
 }

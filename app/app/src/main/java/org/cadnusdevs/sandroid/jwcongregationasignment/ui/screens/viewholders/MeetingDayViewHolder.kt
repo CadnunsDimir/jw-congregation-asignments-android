@@ -9,11 +9,9 @@ import android.widget.Spinner
 import android.widget.TextView
 import org.cadnusdevs.sandroid.jwcongregationasignment.DateUtils
 import org.cadnusdevs.sandroid.jwcongregationasignment.R
-import org.cadnusdevs.sandroid.jwcongregationasignment.SPINNER_NO_OPTION_TEXT_PtBR
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.Brother
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.MeetingDay
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.QueryViews
-import java.util.Calendar
 
 class MeetingDayViewHolder
     private constructor(
@@ -51,45 +49,27 @@ class MeetingDayViewHolder
     }
     private fun fillAllSpinners() {
         this.spinners().forEach { spinner ->
-            val items = generateSpinnerItems(brothers)
             spinner?.let {
-                    spinner -> q.setSpinnerItems(spinner, items) { it.name }
+                    spinner -> q.setBrotherSpinnerItems(spinner, brothers) { it.name }
             }
         }
     }
 
     private fun spinners() = arrayOf(usherA,usherB, micA, micB, computer, soundSystem)
 
-    private fun generateSpinnerItems(brothers: List<Brother>): List<Brother> {
-        val options = ArrayList<Brother>()
-        val noOption = Brother(0,SPINNER_NO_OPTION_TEXT_PtBR,
-            canBeUsher = false,
-            canBeMicrophone = false,
-            canBeComputer = false,
-            canBeSoundSystem = false
-        )
-        options.add(noOption)
-        options.addAll(brothers)
-        return options
-    }
-
     fun setValue(meetingDay: MeetingDay) {
         meetingDayId = meetingDay.id
         cleanGroup.setSelection((cleanGroup.adapter as ArrayAdapter<String>).getPosition("${meetingDay.cleanGroupId}"))
         meetingDay.day?.let { this.setDate(meetingDay.year!!, meetingDay.month!!, meetingDay.day) }
-        setBrother(usherA, meetingDay.usherA)
-        setBrother(usherB, meetingDay.usherB)
-        setBrother(micA, meetingDay.microphoneA)
-        setBrother(micB, meetingDay.microphoneB)
-        setBrother(computer, meetingDay.computer)
-        setBrother(soundSystem, meetingDay.soundSystem)
+        q.setSelectedBrother(usherA, brothers, meetingDay.usherA)
+        q.setSelectedBrother(usherB, brothers, meetingDay.usherB)
+        q.setSelectedBrother(micA, brothers, meetingDay.microphoneA)
+        q.setSelectedBrother(micB, brothers, meetingDay.microphoneB)
+        q.setSelectedBrother(computer, brothers, meetingDay.computer)
+        q.setSelectedBrother(soundSystem, brothers, meetingDay.soundSystem)
     }
 
-    private fun setBrother(spinner: Spinner, brother: Brother?) {
-        val position = brothers.indexOf(brothers.firstOrNull { x -> x.name == brother?.name })
-        if(position >= 0)
-            spinner.setSelection(position + 1)
-    }
+
 
     private fun setDate(year: Int, month: Int, day: Int) {
         this._dateZeroBased = DateUtils.toDate(year, month, day)
