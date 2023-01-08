@@ -8,26 +8,28 @@ import android.widget.LinearLayout
 import android.widget.TableLayout
 import android.widget.TableRow
 import androidx.core.view.setPadding
+import org.cadnusdevs.sandroid.jwcongregationasignment.models.Weekend
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.QueryViews
 
 abstract class BaseTableAdapter<T>(val parentView: View?, private val tableId: Int) {
     private val saveButtonText = "Salvar"
     private var dialog: Dialog? = null
     private val cancelButtonText = "Cancelar"
-    private var list: List<T> = ArrayList()
+    private var list: ArrayList<T> = ArrayList()
     private var rows: ArrayList<TableRow> = ArrayList()
     private var indexLine: Int = 1
     private val cellPadding = 10
     val q = QueryViews(parentView!!)
     private val tablePadding = 20
     private val tableBackground = "#555555"
+    var formPosition: Int = -1
 
     fun setData(list: List<T>) : BaseTableAdapter<T>{
-        this.list = list
+        this.list = ArrayList(list)
         return this
     }
 
-    val data: List<T>
+    val data: ArrayList<T>
     get() = list
 
     fun addRows() : BaseTableAdapter<T>{
@@ -93,9 +95,7 @@ abstract class BaseTableAdapter<T>(val parentView: View?, private val tableId: I
         return buttons
     }
 
-    abstract fun onSave()
 
-    abstract fun editForm(position: Int): View
 
     private fun coloredRow(): TableRow {
         val row = q.tableRow()
@@ -108,7 +108,14 @@ abstract class BaseTableAdapter<T>(val parentView: View?, private val tableId: I
         row(table, this.headers(), isBold = true)
     }
 
-    abstract fun headers(): Array<String>
+    fun setFormData(item: T) {
+        data[formPosition] = item
+    }
 
+    fun getFormData() = data[formPosition]
+
+    abstract fun onSave()
+    abstract fun editForm(position: Int): View
+    abstract fun headers(): Array<String>
     abstract fun weekendRow(table: TableLayout?, it: T)
 }

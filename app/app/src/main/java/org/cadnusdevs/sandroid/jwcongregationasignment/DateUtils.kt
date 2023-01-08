@@ -79,7 +79,7 @@ class DateUtils {
 
         private fun toCalendar(): Calendar {
             val date = Calendar.getInstance()
-            date.set(year, monthZeroBased,dayOfMonth)
+            date.set(year, monthZeroBased,dayOfMonth,0,0,0)
             return date
         }
 
@@ -109,10 +109,15 @@ class DateUtils {
             }
         }
 
-        private fun clone() = ZeroBasedDate(year, monthZeroBased, dayOfMonth)
+        fun clone() = ZeroBasedDate(year, monthZeroBased, dayOfMonth)
         fun asTimeStamp(): Long {
             return toCalendar().timeInMillis
         }
+
+        fun isSameDate(date: ZeroBasedDate): Boolean {
+            return date.year == this.year && date.monthZeroBased == this.monthZeroBased && date.dayOfMonth == this.dayOfMonth
+        }
+
         companion object{
             fun from(calendar:Calendar) = ZeroBasedDate(calendar)
         }

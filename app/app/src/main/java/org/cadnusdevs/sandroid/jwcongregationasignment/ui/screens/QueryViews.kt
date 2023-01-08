@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.graphics.Color
 import android.graphics.Typeface
+import android.text.Editable
 import android.text.SpannableString
 import android.text.style.StyleSpan
 import android.util.TypedValue
@@ -141,5 +142,11 @@ class QueryViews(private var _view: View) {
         options.add(noOption)
         options.addAll(brothers)
         return options
+    }
+
+    fun editText(text: String): EditText {
+        val component = EditText(_view.context)
+        component.setText(text)
+        return component
     }
 }

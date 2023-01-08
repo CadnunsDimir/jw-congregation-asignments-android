@@ -13,12 +13,18 @@ import org.cadnusdevs.sandroid.jwcongregationasignment.DateUtils.*
 import org.cadnusdevs.sandroid.jwcongregationasignment.R
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.Brother
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.MeetingDay
+import org.cadnusdevs.sandroid.jwcongregationasignment.models.Weekend
 
 class PrintService(private val activity: Context) {
     private val printJobs = ArrayList<PrintJob>()
     private var mWebView: WebView? = null
 
-    fun print(title: String, meetings: List<MeetingDay>) {
+    fun print(
+        title: String,
+        meetings: List<MeetingDay>,
+        weekends: List<Weekend>,
+        invitedSpeechesCongregation: String
+    ) {
         val webView = WebView(activity)
         webView.webViewClient = object : WebViewClient() {
 
@@ -34,15 +40,45 @@ class PrintService(private val activity: Context) {
 
         val midWeekMeetingsTable = meetingTable(meetings, WeekDay.midWeekDays)
         val weekendMeetingsTable = meetingTable(meetings, WeekDay.weekEndDays)
+        val weekendPresidentReaderTable = presidentReaderTable(weekends)
+        val speechesArrangement = speechesArrangementTable(invitedSpeechesCongregation, weekends)
 
         // Generate an HTML document on the fly:
         val htmlDocument =
-            "<html><head>$css</head><body><h1>$title</h1>$midWeekMeetingsTable $weekendMeetingsTable</body></html>"
+            "<html><head>$css</head><body><h1>$title</h1>$midWeekMeetingsTable $weekendMeetingsTable $weekendPresidentReaderTable $speechesArrangement</body></html>"
         webView.loadDataWithBaseURL(null, htmlDocument, "text/HTML", "UTF-8", null)
 
         // Keep a reference to WebView object until you pass the PrintDocumentAdapter
         // to the PrintManager
         mWebView = webView
+    }
+
+    private fun speechesArrangementTable(
+        invitedSpeechesCongregation: String,
+        weekends: List<Weekend>
+    ): String {
+        val table = StringBuilder()
+        table.append("<h2>Arreglo de Discurso</h2>")
+        table.append("<table class='speeches-arrangement'>")
+        table.append("<tr><th colspan='3'>Estaremos en Arreglo con la Congregación $invitedSpeechesCongregation</th></tr>")
+        table.append("<tr><th>Fecha</th><th>Presidencia</th><th>Lector Atalaya</th></tr>")
+        weekends.forEach {
+            table.append("<tr>${td(it.date.shortDate)}${td(it.speech.title)}${td(it.speech.speaker)}</tr>")
+        }
+        table.append("</table>")
+        return table.toString()
+    }
+
+    private fun presidentReaderTable(weekends: List<Weekend>): Any {
+        val table = StringBuilder()
+        table.append("<h2>Reunión de Fin de Semana</h2>")
+        table.append("<table class='president-reader'>")
+        table.append("<tr><th>Fecha</th><th>Presidencia</th><th>Lector Atalaya</th></tr>")
+        weekends.forEach {
+            table.append("<tr>${td(it.date.shortDate)}${td(it.meetingPresident)}${td(it.watchTowerReader)}</tr>")
+        }
+        table.append("</table>")
+        return table.toString()
     }
 
     private fun meetingTable(meetings: List<MeetingDay>, days: Array<WeekDay>) = generateHtmlTable(meetings.filter { meetingDay -> days.contains(meetingDay.date.weekDay) })

@@ -1,13 +1,8 @@
 package org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens
 
-import android.graphics.Color
 import android.view.View
-import android.widget.Button
 import android.widget.ListView
-import android.widget.TableLayout
-import android.widget.TableRow
 import android.widget.TextView
-import androidx.core.view.setPadding
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
@@ -16,10 +11,10 @@ import org.cadnusdevs.sandroid.jwcongregationasignment.R
 import org.cadnusdevs.sandroid.jwcongregationasignment.dbMock.Companion.brothers
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.Brother
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.MeetingDay
-import org.cadnusdevs.sandroid.jwcongregationasignment.models.SpeechesArrangement
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.Weekend
 import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.BrotherRepository
 import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.MeetingDayRepository
+import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.WeekendRepository
 import org.cadnusdevs.sandroid.jwcongregationasignment.service.PrintService
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.adapters.MeetingDayArrayAdapter
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.adapters.SpeechTableAdapter
@@ -30,6 +25,7 @@ import org.cadnusdevs.sandroid.jwcongregationasignment.ui.shared.BaseFragment
 // template: R.layout.fragment_edit_asignations
 class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange {
 
+    private lateinit var weekendRepository: WeekendRepository
     private lateinit var titleView: TextView
     private lateinit var printService: PrintService
     private lateinit var floating: FloatingActionButton
@@ -66,13 +62,24 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
     }
 
     private fun defineTabWeekend(view: View?, meetings: List<MeetingDay>) {
-        val weekends = Weekend.listFrom(month.monthZeroBased, meetings)
+        weekendRepository = WeekendRepository()
+        var weekends = getWeekendsFromDb()
+        if(weekends.isEmpty()){
+            weekends = Weekend.listFrom(month.monthZeroBased, meetings)
+            weekendRepository.saveAll(weekends)
+        }
         WeekendTableAdapter(view, R.id.tab_weekend_table, brothers)
             .setData(weekends)
             .addRows()
         SpeechTableAdapter(view, R.id.speeches_table)
             .setData(weekends)
             .addRows()
+    }
+
+    private fun getWeekendsFromDb(): List<Weekend> {
+        val nextMonth = month.clone()
+        nextMonth.addMonth(1)
+        return weekendRepository.listBetweenDates(month, nextMonth)
     }
 
     private fun setTitle() {
@@ -94,7 +101,9 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
         }
         floating.setOnClickListener{
             val meetings = meetingDayRepository.getAllByMonthYear(month.formatMonthYearBr())
-            printService.print(titleView.text.toString(), meetings)
+            val weekends = getWeekendsFromDb()
+            val invitedSpeechesCongregation = q.getEditTextValue(R.id.invited_congregation_editText)
+            printService.print(titleView.text.toString(), meetings, weekends, invitedSpeechesCongregation)
         }
 
         tabWeekEnd?.visibility = View.GONE

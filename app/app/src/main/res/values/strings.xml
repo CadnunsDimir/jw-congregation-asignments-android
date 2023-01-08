@@ -30,7 +30,9 @@
         table.full-width{
             width: 100%;
         }
-        h1{
+        table.president-reader{
+        }
+        h1,h2{
             text-align: center;
             margin-top: 0px;
         }
@@ -41,6 +43,7 @@
         }
         th{
             background-color: green;
+            color: white;
         }
         .grey{
             background-color: gray !important;

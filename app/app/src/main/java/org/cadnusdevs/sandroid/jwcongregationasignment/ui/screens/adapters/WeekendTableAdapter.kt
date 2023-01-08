@@ -6,10 +6,10 @@ import android.widget.Spinner
 import android.widget.TableLayout
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.Brother
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.Weekend
+import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.WeekendRepository
 
 class WeekendTableAdapter(parentView: View?, private val tableId: Int, val brothers: List<Brother>) :
     BaseTableAdapter<Weekend>(parentView, tableId) {
-    private var formPosition: Int = -1
     private lateinit var readerSpinner: Spinner
     private lateinit var presidentSpinner: Spinner
     private val readerHeader = "Lector"
@@ -44,9 +44,13 @@ class WeekendTableAdapter(parentView: View?, private val tableId: Int, val broth
     }
 
     override fun onSave() {
-        val weekend = getFormData()
+        val weekendRepository = WeekendRepository()
+        val formData = getFormData()
+        val weekend = weekendRepository.getFromDate(formData.date)
         weekend.meetingPresident = getValueOrNull(presidentSpinner)
         weekend.watchTowerReader = getValueOrNull(readerSpinner)
+        setFormData(weekend)
+        weekendRepository.update(weekend)
         setData(data).addRows()
     }
 
@@ -54,6 +58,4 @@ class WeekendTableAdapter(parentView: View?, private val tableId: Int, val broth
         var brother = q.getSpinnerSelectedItem<Brother>(spinner)
         return if(brother.id > 0) brother else null
     }
-
-    private fun getFormData() = data[formPosition]
 }

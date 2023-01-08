@@ -7,7 +7,7 @@ class Weekend(val date: DateUtils.ZeroBasedDate,
               var watchTowerReader: Brother?,
               var speech: Speech
               ) {
-    class Speech(val title: String, val speaker: String)
+    class Speech(var title: String, var speaker: String)
     companion object{
         fun listFrom(monthNumber: Int, meetings: List<MeetingDay>): List<Weekend> {
             return meetings
