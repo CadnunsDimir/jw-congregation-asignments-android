@@ -32,11 +32,12 @@ class MyBrotherRecyclerViewAdapter(
         val item = values[position]
         holder.idView.text = "${item.id}. ${item.name}: "
         holder.contentView.text = StringBuilder()
-            .append(if(item.canBeUsher)  "Indicador " else "")
-            .append(if(item.canBeMicrophone)  "Microfone " else "")
-            .append(if(item.canBeComputer)  "PC " else "")
-            .append(if(item.canBeSoundSystem)  "Som " else "")
+            .append(if(item.canBeUsher)  "Acomodador " else "")
+            .append(if(item.canBeMicrophone)  "Micrófono " else "")
+            .append(if(item.canBeComputer)  "Computadora " else "")
+            .append(if(item.canBeSoundSystem)  "Sonido" else "")
             .toString()
+            .replace(" ",", ")
 
         holder.contentView.setOnClickListener {
             this.onItemClickBehavior?.invoke(item)

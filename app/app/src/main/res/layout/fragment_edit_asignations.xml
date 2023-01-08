@@ -14,7 +14,7 @@
         android:padding="10dp"
         android:text="@string/frag_edit_assignments__title"
         android:textAlignment="center"
-        android:textSize="20sp"
+        android:textSize="@dimen/title_h1_text_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
