@@ -2,6 +2,7 @@ package org.cadnusdevs.sandroid.jwcongregationasignment.repositories
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.provider.BaseColumns
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.Brother
 
@@ -92,5 +93,25 @@ class BrotherRepository (ctx: Context){
 
     private fun intToBool(value: Int): Boolean {
         return value == 1
+    }
+
+    companion object{
+        private var brotherTemp: List<Brother>? = null
+        private var cursorTemp: Cursor? = null
+
+        fun setDbInfo(cursor: Cursor, brothers: List<Brother>){
+            cursorTemp = cursor
+            brotherTemp = brothers
+        }
+
+        fun getBrother(columnName: String): Brother? {
+            if(cursorTemp == null || brotherTemp == null || brotherTemp?.isEmpty() == true)
+                throw Exception("Should set cursor and brothers using BrotherRepository.setDbInfo(cursor: Cursor, brothers: List<Brother>)")
+            cursorTemp?.let{
+                var brotherId = it.getLong(it.getColumnIndexOrThrow(columnName))
+                return brotherTemp?.firstOrNull { x-> x.id == brotherId  }
+            }
+            return null
+        }
     }
 }

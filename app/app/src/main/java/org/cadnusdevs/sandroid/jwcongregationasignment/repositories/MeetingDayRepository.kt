@@ -34,17 +34,18 @@ class MeetingDayRepository (ctx: Context, private val brothers: List<Brother>){
         with(cursor) {
             while (moveToNext()) {
                 var date = DateUtils.toDateFromTimeStamp(getLong(getColumnIndexOrThrow(table.COLUMN_DATE)))
+                BrotherRepository.setDbInfo(cursor, brothers)
                 val meeting = MeetingDay(
                     date.dayOfMonth,
                     date.monthZeroBased,
                     date.year,
                     getString(getColumnIndexOrThrow(table.COLUMN_MONTH_YEAR_SHEET)),
-                    getBrother(this, table.COLUMN_USHER_A_BROTHER_ID),
-                    getBrother(this, table.COLUMN_USHER_B_BROTHER_ID),
-                    getBrother(this, table.COLUMN_MIC_A_BROTHER_ID),
-                    getBrother(this, table.COLUMN_MIC_B_BROTHER_ID),
-                    getBrother(this, table.COLUMN_COMPUTER_BROTHER_ID),
-                    getBrother(this, table.COLUMN_SOUND_SYSTEM_BROTHER_ID),
+                    BrotherRepository.getBrother(table.COLUMN_USHER_A_BROTHER_ID),
+                    BrotherRepository.getBrother(table.COLUMN_USHER_B_BROTHER_ID),
+                    BrotherRepository.getBrother(table.COLUMN_MIC_A_BROTHER_ID),
+                    BrotherRepository.getBrother(table.COLUMN_MIC_B_BROTHER_ID),
+                    BrotherRepository.getBrother(table.COLUMN_COMPUTER_BROTHER_ID),
+                    BrotherRepository.getBrother(table.COLUMN_SOUND_SYSTEM_BROTHER_ID),
                     getInt(getColumnIndexOrThrow(table.COLUMN_CLEANING_GROUP_ID)),
                     getLong(getColumnIndexOrThrow(BaseColumns._ID)))
                 meetings.add(meeting)
@@ -54,12 +55,7 @@ class MeetingDayRepository (ctx: Context, private val brothers: List<Brother>){
         return meetings
     }
 
-    private fun getBrother(cursor: Cursor,columnName: String): Brother? {
-        cursor.let{
-            var brotherId = it.getLong(it.getColumnIndexOrThrow(columnName))
-            return this.brothers.firstOrNull { x-> x.id == brotherId  }
-        }
-    }
+
 
     fun saveAll(days: List<MeetingDay>) {
         if(days.isNotEmpty()){

@@ -62,7 +62,7 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
     }
 
     private fun defineTabWeekend(view: View?, meetings: List<MeetingDay>) {
-        weekendRepository = WeekendRepository()
+        weekendRepository = WeekendRepository(requireActivity(), brothers)
         var weekends = getWeekendsFromDb()
         if(weekends.isEmpty()){
             weekends = Weekend.listFrom(month.monthZeroBased, meetings)
@@ -71,7 +71,7 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
         WeekendTableAdapter(view, R.id.tab_weekend_table, brothers)
             .setData(weekends)
             .addRows()
-        SpeechTableAdapter(view, R.id.speeches_table)
+        SpeechTableAdapter(view, R.id.speeches_table, brothers)
             .setData(weekends)
             .addRows()
     }

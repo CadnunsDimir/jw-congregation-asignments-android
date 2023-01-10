@@ -4,11 +4,12 @@ import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TableLayout
+import org.cadnusdevs.sandroid.jwcongregationasignment.models.Brother
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.SpeechesArrangement
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.Weekend
 import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.WeekendRepository
 
-class SpeechTableAdapter(parentView: View?, tableId: Int) :
+class SpeechTableAdapter(parentView: View?, tableId: Int, val brothers: List<Brother>) :
     BaseTableAdapter<Weekend>(parentView, tableId) {
     private lateinit var speakerEdit: EditText
     private lateinit var titleEdit: EditText
@@ -35,9 +36,9 @@ class SpeechTableAdapter(parentView: View?, tableId: Int) :
     }
 
     override fun onSave() {
-        val weekendRepository = WeekendRepository()
+        val weekendRepository = WeekendRepository(parentView?.context!!, brothers)
         val formData = getFormData()
-        val weekend = weekendRepository.getFromDate(formData.date)
+        val weekend = weekendRepository.getFromDate(formData.date)!!
         weekend.speech.title = titleEdit.text.toString()
         weekend.speech.speaker = speakerEdit.text.toString()
         setFormData(weekend)

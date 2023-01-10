@@ -44,9 +44,9 @@ class WeekendTableAdapter(parentView: View?, private val tableId: Int, val broth
     }
 
     override fun onSave() {
-        val weekendRepository = WeekendRepository()
+        val weekendRepository = WeekendRepository(parentView?.context!!, brothers)
         val formData = getFormData()
-        val weekend = weekendRepository.getFromDate(formData.date)
+        val weekend = weekendRepository.getFromDate(formData.date)!!
         weekend.meetingPresident = getValueOrNull(presidentSpinner)
         weekend.watchTowerReader = getValueOrNull(readerSpinner)
         setFormData(weekend)
