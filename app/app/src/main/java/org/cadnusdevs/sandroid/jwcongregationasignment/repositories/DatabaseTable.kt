@@ -1,8 +1,5 @@
 package org.cadnusdevs.sandroid.jwcongregationasignment.repositories
 
-import android.database.Cursor
-import android.provider.BaseColumns
-
 class DatabaseTable(val name: String, vararg val columns: Column) {
     class Column(val name: String, val dataTypeAndMetadata: String)
     class Where(column: String, value: Any){
@@ -49,6 +46,8 @@ class DatabaseTable(val name: String, vararg val columns: Column) {
         sql += ")"
         return sql
     }
+
+    fun sqlDropTable() = "DROP TABLE IF EXISTS $name"
 
     fun columnsAsArray() = columns.map { it.name }.toTypedArray()
 }

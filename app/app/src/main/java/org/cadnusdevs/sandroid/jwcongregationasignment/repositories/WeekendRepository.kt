@@ -13,10 +13,6 @@ class WeekendRepository(ctx: Context, private val brothers: List<Brother>) {
         month: DateUtils.ZeroBasedDate,
         nextMonth: DateUtils.ZeroBasedDate
     ): List<Weekend> {
-//        return virtualDB.filter {
-//            val date = it.date.asTimeStamp()
-//            return@filter date >= month.asTimeStamp() && date < nextMonth.asTimeStamp()
-//        }
 
         val where = DbContracts.WeekendEntry.whereBetweenDates(month,nextMonth)
         val cursor = query(dbHelper.readableDatabase, where)
@@ -41,6 +37,7 @@ class WeekendRepository(ctx: Context, private val brothers: List<Brother>) {
                 weekends.add(weekend)
             }
         }
+        cursor.close()
         return weekends
     }
 
@@ -83,7 +80,7 @@ class WeekendRepository(ctx: Context, private val brothers: List<Brother>) {
                 )
             }
         }
-
+        cursor.close()
         return weekend
     }
 
@@ -105,9 +102,12 @@ class WeekendRepository(ctx: Context, private val brothers: List<Brother>) {
         Log.println(Log.INFO,"WeekendRepository",
             if(entitiesUpdated != null && entitiesUpdated > 0 ) "$entitiesUpdated Weekend entities updated"
             else "error on update entity")
+    }
 
-//        val position = virtualDB.indexOf(virtualDB.first { it.date.asTimeStamp() == weekend.date.asTimeStamp() })
-//        virtualDB[position] = weekend
+    fun recreateTable() {
+        val db = dbHelper.writableDatabase
+        db.execSQL(DbContracts.WeekendEntry.table.sqlDropTable())
+        db.execSQL(DbContracts.WeekendEntry.table.sqlCreateTable())
     }
 
     companion object{
