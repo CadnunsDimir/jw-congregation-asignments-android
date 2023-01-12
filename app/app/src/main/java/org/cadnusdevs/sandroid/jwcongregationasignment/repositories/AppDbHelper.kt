@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper
 
 class AppDbHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     override fun onCreate(db: SQLiteDatabase) {
-        db.execSQL(DbContracts.SQL_CREATE_ENTRIES())
+        db.execSQL(DbContracts.sqlCreateAllTables())
     }
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         // This database is only a cache for online data, so its upgrade policy is
@@ -19,7 +19,13 @@ class AppDbHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
         if(needCreateWeekendEntry(oldVersion,newVersion)){
             db.execSQL(DbContracts.WeekendEntry.table.sqlCreateTable())
         }
+        if(needCreateSpeechesEntry(oldVersion,newVersion)){
+            db.execSQL(DbContracts.SpeechesArrangementEntry.table.sqlCreateTable())
+        }
     }
+
+    private fun needCreateSpeechesEntry(oldVersion: Int, newVersion: Int) =
+        oldVersion == 3 && newVersion == 4
 
     private fun needCreateWeekendEntry(oldVersion: Int, newVersion: Int) =
         oldVersion == 2 && newVersion == 3
@@ -37,8 +43,9 @@ class AppDbHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
         * 1 = brothers
         * 2 = meetings
         * 3 = weekend
+        * 4 = SpeechesArrangement
         * */
-        const val DATABASE_VERSION = 3
+        const val DATABASE_VERSION = 4
         const val DATABASE_NAME = "JwCongregationAsignments.db"
     }
 }

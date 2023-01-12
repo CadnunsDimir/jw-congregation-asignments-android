@@ -3,6 +3,7 @@ package org.cadnusdevs.sandroid.jwcongregationasignment.repositories
 import android.content.ContentValues
 import android.provider.BaseColumns
 import org.cadnusdevs.sandroid.jwcongregationasignment.DateUtils
+import org.cadnusdevs.sandroid.jwcongregationasignment.models.SpeechesArrangement
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.Weekend
 import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.DatabaseTable.Column
 
@@ -12,6 +13,30 @@ object DbContracts {
         const val INT_PK = "INTEGER PRIMARY KEY"
         const val INT = "INTEGER"
         const val STRING = "TEXT"
+    }
+
+    interface EntryWithTable<T>: BaseColumns{
+        fun values(entity: T): ContentValues
+
+        val table: DatabaseTable
+    }
+
+    object SpeechesArrangementEntry: EntryWithTable<SpeechesArrangement> {
+        const val YEAR = "year"
+        const val MONTH = "month"
+        const val INVITED_CONGREGATION = "invited_congregation"
+
+        override val table = DatabaseTable("speeches_arrangement",
+            Column(YEAR, ColumnType.INT),
+            Column(MONTH, ColumnType.INT),
+            Column(INVITED_CONGREGATION, ColumnType.STRING),
+        )
+
+        override fun values(entity: SpeechesArrangement) = ContentValues().apply {
+            put(YEAR, entity.year)
+            put(MONTH, entity.month)
+            put(INVITED_CONGREGATION, entity.invitedCongregation)
+        }
     }
 
     object BrotherEntry : BaseColumns {
@@ -48,9 +73,7 @@ object DbContracts {
         )
     }
 
-    object WeekendEntry: BaseColumns {
-
-
+    object WeekendEntry: EntryWithTable<Weekend> {
         const val YEAR = "year"
         const val MONTH = "month"
         const val DAY = "day"
@@ -59,7 +82,7 @@ object DbContracts {
         const val SPEECH_TITLE = "speech_title"
         const val SPEECH_SPEAKER_NAME = "speech_speaker_name"
 
-        val table = DatabaseTable("weekend",
+        override val table = DatabaseTable("weekend",
             Column(BaseColumns._ID, ColumnType.INT_PK),
             Column(YEAR, ColumnType.INT),
             Column(MONTH, ColumnType.INT),
@@ -69,7 +92,8 @@ object DbContracts {
             Column(SPEECH_TITLE, ColumnType.STRING),
             Column(SPEECH_SPEAKER_NAME, ColumnType.STRING),
         )
-        fun values(weekend: Weekend) = ContentValues().apply {
+
+        override fun values(weekend: Weekend) = ContentValues().apply {
             put(YEAR, weekend.date.year)
             put(MONTH, weekend.date.monthZeroBased)
             put(DAY, weekend.date.dayOfMonth)
@@ -89,21 +113,6 @@ object DbContracts {
             start: DateUtils.ZeroBasedDate,
             finish: DateUtils.ZeroBasedDate
         ): DatabaseTable.Where {
-//            val sameYear = start.year == finish.year
-//            val sameMonth = start.monthZeroBased == finish.monthZeroBased
-//            val sameDay = start.dayOfMonth == finish.dayOfMonth
-//
-//            if(sameYear && sameMonth) {
-//                return DatabaseTable.Where(YEAR, start.year)
-//                    .and(MONTH, start.monthZeroBased)
-//                    .between(DAY, start.dayOfMonth, finish.dayOfMonth)
-//            }
-//
-//            if(sameYear && sameDay) {
-//                return DatabaseTable.Where(YEAR, start.year)
-//                    .and(DAY, start.dayOfMonth)
-//                    .between(MONTH, start.monthZeroBased, finish.monthZeroBased)
-//            }
 
             return DatabaseTable.Where.getInstance(
                 "($YEAR * 365 + ($MONTH + 1) * 45 + $DAY) >= ( ? * 365 + (? + 1) * 45 + ?) AND " +
@@ -138,7 +147,8 @@ object DbContracts {
             "${MeetingDayEntry.COLUMN_SOUND_SYSTEM_BROTHER_ID} ${ColumnType.INT}," +
             "${MeetingDayEntry.COLUMN_CLEANING_GROUP_ID} ${ColumnType.INT})"
 
-    fun SQL_CREATE_ENTRIES() = "$CREATE_BROTHER_ENTRY $CREATE_MEETING_DAY_ENTRY ${WeekendEntry.table.sqlCreateTable()}"
+    fun sqlCreateAllTables() =
+        "$CREATE_BROTHER_ENTRY $CREATE_MEETING_DAY_ENTRY ${WeekendEntry.table.sqlCreateTable()} ${SpeechesArrangementEntry.table.sqlCreateTable()}"
 
     const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS ${BrotherEntry.TABLE_NAME}"
 }

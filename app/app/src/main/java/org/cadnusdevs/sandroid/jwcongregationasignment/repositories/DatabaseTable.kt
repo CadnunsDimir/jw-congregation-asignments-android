@@ -27,7 +27,7 @@ class DatabaseTable(val name: String, vararg val columns: Column) {
         }
     }
 
-    class Cursor(private val innerCursor: android.database.Cursor?) {
+    class PoweredCursor(private val innerCursor: android.database.Cursor?) {
         fun number(columnName: String): Int {
             with(innerCursor!!) {
                 return getInt(getColumnIndexOrThrow(columnName))

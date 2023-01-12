@@ -1,6 +1,7 @@
 package org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens
 
 import android.view.View
+import android.widget.EditText
 import android.widget.ListView
 import android.widget.TextView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -11,9 +12,11 @@ import org.cadnusdevs.sandroid.jwcongregationasignment.R
 import org.cadnusdevs.sandroid.jwcongregationasignment.dbMock.Companion.brothers
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.Brother
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.MeetingDay
+import org.cadnusdevs.sandroid.jwcongregationasignment.models.SpeechesArrangement
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.Weekend
 import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.BrotherRepository
 import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.MeetingDayRepository
+import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.SpeechesArrangementRepository
 import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.WeekendRepository
 import org.cadnusdevs.sandroid.jwcongregationasignment.service.PrintService
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.adapters.MeetingDayArrayAdapter
@@ -25,6 +28,8 @@ import org.cadnusdevs.sandroid.jwcongregationasignment.ui.shared.BaseFragment
 // template: R.layout.fragment_edit_asignations
 class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange {
 
+    private lateinit var arrangementEditText: EditText
+    private lateinit var speechesRepository: SpeechesArrangementRepository
     private lateinit var weekendRepository: WeekendRepository
     private lateinit var titleView: TextView
     private lateinit var printService: PrintService
@@ -63,6 +68,7 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
 
     private fun defineTabWeekend(view: View?, meetings: List<MeetingDay>) {
         weekendRepository = WeekendRepository(requireActivity(), brothers)
+
         var weekends = getWeekendsFromDb()
         if(weekends.isEmpty()){
             weekends = Weekend.listFrom(month.monthZeroBased, meetings)
@@ -74,6 +80,17 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
         SpeechTableAdapter(view, R.id.speeches_table, brothers)
             .setData(weekends)
             .addRows()
+
+        speechesRepository = SpeechesArrangementRepository(requireActivity())
+        var arrangement = speechesRepository.getFromMonth(month)
+        if (arrangement == null) {
+            arrangement = SpeechesArrangement(month.year, month.monthZeroBased, "")
+            speechesRepository.insert(arrangement)
+        }
+
+        arrangementEditText = q.find<EditText>(R.id.invited_congregation_editText)!!
+        arrangementEditText?.setText(arrangement.invitedCongregation)
+
     }
 
     private fun getWeekendsFromDb(): List<Weekend> {
@@ -126,6 +143,15 @@ class EditAssignmentsFragment : BaseFragment(), MeetingDayArrayAdapter.OnChange 
             }
         }
         q.find<TabLayout>(R.id.tabLayout)?.addOnTabSelectedListener(listener)
+
+        arrangementEditText?.onFocusChangeListener =
+            View.OnFocusChangeListener { view, hasFocus ->
+                if(!hasFocus){
+                    var arrangement = speechesRepository.getFromMonth(month)!!
+                    arrangement.invitedCongregation = arrangementEditText.text.toString()
+                    speechesRepository.update(arrangement)
+                }
+            }
     }
 
     override fun onChange(meeting: MeetingDay) {
