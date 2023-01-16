@@ -17,6 +17,7 @@ object DbContracts {
 
     interface EntryWithTable<T>: BaseColumns{
         fun values(entity: T): ContentValues
+        fun getInstance() = this
 
         val table: DatabaseTable
     }

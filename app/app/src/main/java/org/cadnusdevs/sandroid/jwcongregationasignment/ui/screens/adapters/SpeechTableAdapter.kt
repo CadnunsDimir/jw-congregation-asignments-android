@@ -1,5 +1,6 @@
 package org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.adapters
 
+import android.text.InputType
 import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -25,7 +26,9 @@ class SpeechTableAdapter(parentView: View?, tableId: Int, val brothers: List<Bro
         formPosition = position
         val weekend = getFormData()
         titleEdit = q.editText(weekend.speech.title)
+        titleEdit.inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS
         speakerEdit = q.editText(weekend.speech.speaker)
+        speakerEdit.inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS
         arrayOf(
             q.Text(headers()[1]),
             titleEdit,

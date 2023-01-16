@@ -5,8 +5,7 @@ import android.util.Log
 import org.cadnusdevs.sandroid.jwcongregationasignment.DateUtils
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.SpeechesArrangement
 
-class SpeechesArrangementRepository(ctx: Context) : BaseRepository(ctx){
-    private val entry = DbContracts.SpeechesArrangementEntry
+class SpeechesArrangementRepository(ctx: Context) : BaseRepository<DbContracts.SpeechesArrangementEntry>(ctx, DbContracts.SpeechesArrangementEntry){
     fun getFromMonth(date: DateUtils.ZeroBasedDate):  SpeechesArrangement? {
         val where = DatabaseTable
             .Where(entry.YEAR, date.year)

@@ -5,9 +5,10 @@ import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import org.cadnusdevs.sandroid.jwcongregationasignment.DateUtils
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.Brother
+import org.cadnusdevs.sandroid.jwcongregationasignment.models.SpeechesArrangement
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.Weekend
 
-class WeekendRepository(ctx: Context, private val brothers: List<Brother>): BaseRepository(ctx) {
+class WeekendRepository(ctx: Context, private val brothers: List<Brother>): BaseRepository<DbContracts.WeekendEntry>(ctx, DbContracts.WeekendEntry) {
     fun listBetweenDates(
         month: DateUtils.ZeroBasedDate,
         nextMonth: DateUtils.ZeroBasedDate
@@ -19,10 +20,9 @@ class WeekendRepository(ctx: Context, private val brothers: List<Brother>): Base
 
         with(cursor) {
             val c = DatabaseTable.PoweredCursor(this)
-            val entry = DbContracts.WeekendEntry
             while (moveToNext()) {
                 BrotherRepository.setDbInfo(this, brothers)
-                val weekend = mapEntity(c,entry)
+                val weekend = mapEntity(c)
                 weekends.add(weekend)
             }
         }
@@ -30,7 +30,7 @@ class WeekendRepository(ctx: Context, private val brothers: List<Brother>): Base
         return weekends
     }
 
-    private fun mapEntity(c: DatabaseTable.PoweredCursor, entry: DbContracts.WeekendEntry) = Weekend(
+    private fun mapEntity(c: DatabaseTable.PoweredCursor) = Weekend(
         DateUtils.ZeroBasedDate(
             c.number(entry.YEAR),
             c.number(entry.MONTH),
@@ -49,11 +49,13 @@ class WeekendRepository(ctx: Context, private val brothers: List<Brother>): Base
     }
 
      fun insert(weekend: Weekend){
-        val weekendId = db(true).insert(DbContracts.WeekendEntry.table.name, null, DbContracts.WeekendEntry.values(weekend))
+        val weekendId = db(true).insert(table(), null, DbContracts.WeekendEntry.values(weekend))
         Log.println(Log.INFO,"WeekendRepository",
             if(weekendId > 0) "entity saved under id=$weekendId"
             else "error on save entity ${weekend.toString()}")
     }
+
+
 
     fun getFromDate(date: DateUtils.ZeroBasedDate): Weekend? {
         val where = DbContracts.WeekendEntry.whereDate(date)
@@ -63,10 +65,9 @@ class WeekendRepository(ctx: Context, private val brothers: List<Brother>): Base
 
         with(cursor) {
             val c = DatabaseTable.PoweredCursor(this)
-            val entry = DbContracts.WeekendEntry
             while (moveToNext()) {
                 BrotherRepository.setDbInfo(this, brothers)
-                weekend = mapEntity(c, entry)
+                weekend = mapEntity(c)
             }
         }
         cursor.close()
