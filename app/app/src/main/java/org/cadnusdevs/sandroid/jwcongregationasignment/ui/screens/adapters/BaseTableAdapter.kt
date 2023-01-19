@@ -114,8 +114,16 @@ abstract class BaseTableAdapter<T>(val parentView: View?, private val tableId: I
 
     fun getFormData() = data[formPosition]
 
+    fun addFooter(view: View) {
+        val table = q.find<TableLayout>(tableId)
+        val row = q.tableRow()
+        row.addView(view)
+        table?.addView(row)
+    }
+
     abstract fun onSave()
     abstract fun editForm(position: Int): View
     abstract fun headers(): Array<String>
     abstract fun weekendRow(table: TableLayout?, it: T)
+
 }

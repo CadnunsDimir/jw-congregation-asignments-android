@@ -2,6 +2,7 @@ package org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
@@ -9,6 +10,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.preference.PreferenceManager
 import android.view.View
+import android.widget.Button
 import android.widget.TableLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.res.ResourcesCompat
@@ -26,6 +28,7 @@ import org.osmdroid.views.overlay.Marker
 
 @Suppress("DEPRECATION")
 class TerritoryCardFragment : BaseFragment(), LocationListener {
+    private lateinit var clipboard: ClipboardManager
     private lateinit var locationService: GeoLocationService
     private lateinit var card: TerritoryCard
     private lateinit var table: DirectionTable
@@ -46,12 +49,57 @@ class TerritoryCardFragment : BaseFragment(), LocationListener {
     override fun setViewData() {
         card = TerritoryCard.card703A
         locationService = GeoLocationService()
+        clipboard = requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     }
 
     override fun setEvents() {
         setInitialPosition()
         setLocationUpdates()
+        setDirectionsTable()
+    }
+
+    private fun setDirectionsTable() {
         table.setData(card.directions.asList()).addRows()
+        table.addFooter(generatePastButton())
+    }
+
+    private fun generatePastButton(): Button {
+        var btn = Button(requireActivity())
+        btn.setOnClickListener{
+            var directions = ArrayList<TerritoryCard.Direction>()
+            val item = clipboard.primaryClip?.getItemAt(0)?.text
+            if(item != null){
+                val lines = item.toString()
+                    .replace("_","")
+                    .replace("Localidad: ","")
+                    .replace("Territ. ", "")
+                    .replace("\r","")
+                    .split("\n")
+
+                if(lines.size > 2) {
+                    val amount = (lines.size + 1) / 2
+                    val line2 = lines[1].split(" Nº: ")
+                    val neighborhood = line2[0].map {
+                        return@map if(it.isUpperCase()) " $it" else it
+                    }.joinToString("")
+                    val cardNumber  = line2[1]
+
+                    for (i in 3..amount) {
+                        var lineIndex = i-1
+                        var streetName = lines[lineIndex]
+                        var numbers = lines[lineIndex+amount-1].split(",").toTypedArray()
+                        var location = locationService.getLocationByAddress(streetName,numbers[0], neighborhood)
+                        directions.add(TerritoryCard.Direction(i-2, streetName, numbers, location.latitude, location.longitude))
+                    }
+
+                    if(directions.isNotEmpty()){
+                        card = TerritoryCard(cardNumber, neighborhood, directions.toTypedArray())
+                        setDirectionsTable()
+                    }
+                }
+            }
+        }
+        return btn
     }
 
     private fun setLocationUpdates() {
