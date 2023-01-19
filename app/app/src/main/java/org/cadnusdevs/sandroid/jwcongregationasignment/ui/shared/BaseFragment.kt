@@ -1,15 +1,14 @@
 package org.cadnusdevs.sandroid.jwcongregationasignment.ui.shared
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import org.cadnusdevs.sandroid.jwcongregationasignment.R
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.QueryViews
 
 
@@ -40,10 +39,26 @@ abstract class BaseFragment : Fragment(){
         requireActivity().supportFragmentManager.popBackStack()
     }
 
-    abstract fun getTemplate(): Int
-    abstract fun configureLayout(view: View?)
-    abstract fun setViewData()
-    abstract fun setEvents()
+    fun validateAndRunWithLocationPermissions(runWithPermission: ()-> Unit) {
+        if (ActivityCompat.checkSelfPermission(
+                this.requireActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this.requireActivity(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                ),
+                99
+            )
+            return
+        }
+        runWithPermission.invoke()
+    }
 
     fun showToast(message: String) {
         Toast.makeText(
@@ -51,4 +66,11 @@ abstract class BaseFragment : Fragment(){
             Toast.LENGTH_LONG
         ).show()
     }
+
+    abstract fun getTemplate(): Int
+    abstract fun configureLayout(view: View?)
+    abstract fun setViewData()
+    abstract fun setEvents()
+
+
 }

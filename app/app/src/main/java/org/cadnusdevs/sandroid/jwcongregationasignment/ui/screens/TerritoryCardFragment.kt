@@ -1,6 +1,7 @@
 package org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
@@ -8,10 +9,14 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.preference.PreferenceManager
 import android.view.View
+import android.widget.TableLayout
 import androidx.core.app.ActivityCompat
+import androidx.core.content.res.ResourcesCompat
 import org.cadnusdevs.sandroid.jwcongregationasignment.BuildConfig
 import org.cadnusdevs.sandroid.jwcongregationasignment.R
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.TerritoryCard
+import org.cadnusdevs.sandroid.jwcongregationasignment.service.GeoLocationService
+import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.adapters.BaseTableAdapter
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.shared.BaseFragment
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -21,6 +26,9 @@ import org.osmdroid.views.overlay.Marker
 
 @Suppress("DEPRECATION")
 class TerritoryCardFragment : BaseFragment(), LocationListener {
+    private lateinit var locationService: GeoLocationService
+    private lateinit var card: TerritoryCard
+    private lateinit var table: DirectionTable
     private lateinit var locationManager: LocationManager
     private var map: MapView? = null
 
@@ -28,19 +36,25 @@ class TerritoryCardFragment : BaseFragment(), LocationListener {
 
     override fun configureLayout(view: View?) {
         setMapView(view)
+        setTableView(view)
+    }
+
+    private fun setTableView(view: View?) {
+        table = DirectionTable(view,R.id.direction_table)
     }
 
     override fun setViewData() {
-
+        card = TerritoryCard.card703A
+        locationService = GeoLocationService()
     }
 
     override fun setEvents() {
         setInitialPosition()
         setLocationUpdates()
+        table.setData(card.directions.asList()).addRows()
     }
 
     private fun setLocationUpdates() {
-        locationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         if (ActivityCompat.checkSelfPermission(
                 this.requireActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -49,7 +63,7 @@ class TerritoryCardFragment : BaseFragment(), LocationListener {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            val result = ActivityCompat.requestPermissions(
+            ActivityCompat.requestPermissions(
                 requireActivity(),
                 arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
@@ -58,9 +72,26 @@ class TerritoryCardFragment : BaseFragment(), LocationListener {
             )
             return
         }
+        locationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0L,0F, this)
-        val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)!!
-        centerMapBy(location)
+        var location = getLastLocation()
+        location?.let {
+            centerMapBy(it)
+            addMarker(TerritoryCard.Direction(0,"", arrayOf(),it.latitude,it.longitude), R.mipmap.ic_launcher_round)
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getLastLocation(): Location? {
+        val providers  = locationManager.getProviders(true)
+        var bestLocation: Location? = null
+        for (provider in providers) {
+            val l: Location = locationManager.getLastKnownLocation(provider) ?: continue
+            if (bestLocation == null || l.accuracy < bestLocation.accuracy) {
+                bestLocation = l
+            }
+        }
+        return bestLocation
     }
 
     private fun centerMapBy(location: Location) {
@@ -77,9 +108,8 @@ class TerritoryCardFragment : BaseFragment(), LocationListener {
     }
 
     private fun setInitialPosition() {
-        val card = TerritoryCard.card703A
         val mapController = map?.controller
-        mapController?.setZoom(14)
+        mapController?.setZoom(16)
 
 //        val startPoint = GeoPoint(card.directions[0].lat, card.directions[0].long);
 //        mapController?.animateTo(startPoint);
@@ -89,15 +119,36 @@ class TerritoryCardFragment : BaseFragment(), LocationListener {
         }
     }
 
-    private fun addMarker(direction: TerritoryCard.Direction) {
+    private fun addMarker(direction: TerritoryCard.Direction, icon: Int? = null) {
         val marker = Marker(map)
         marker.position = GeoPoint(direction.lat, direction.long)
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+        if(icon != null) {
+            val iconFromResources = ResourcesCompat.getDrawable(resources, icon, null)
+            marker.icon = iconFromResources
+        }
         map?.overlays?.add(marker)
         map?.invalidate()
     }
 
     override fun onLocationChanged(location: Location) {
         centerMapBy(location)
+    }
+
+    class DirectionTable(parentView: View?,
+                         tableId: Int
+    ) : BaseTableAdapter<TerritoryCard.Direction>(parentView, tableId) {
+        override fun onSave() {
+        }
+
+        override fun editForm(position: Int): View {
+            return q.Text("TODO")
+        }
+
+        override fun headers() = arrayOf("#", "Calle", "Número(s)")
+
+        override fun weekendRow(table: TableLayout?, it: TerritoryCard.Direction) {
+            row(table, arrayOf(it.directionNumber.toString(), it.streetName, it.houseNumbers.joinToString(",")))
+        }
     }
 }
