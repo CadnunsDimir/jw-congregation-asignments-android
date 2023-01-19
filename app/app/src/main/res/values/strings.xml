@@ -20,7 +20,7 @@
     <string name="assignments">Asignaciones</string>
     <string name="submit">imprimir</string>
 
-    <string name="print_css" >
+    <string name="print_css">
         table{
             border-collapse: collapse;
             margin-left: auto;
