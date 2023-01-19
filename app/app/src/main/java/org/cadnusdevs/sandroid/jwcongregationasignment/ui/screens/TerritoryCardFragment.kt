@@ -28,6 +28,7 @@ import org.osmdroid.views.overlay.Marker
 
 @Suppress("DEPRECATION")
 class TerritoryCardFragment : BaseFragment(), LocationListener {
+    private var userLocation: GeoPoint = GeoPoint(0,0)
     private lateinit var clipboard: ClipboardManager
     private lateinit var locationService: GeoLocationService
     private lateinit var card: TerritoryCard
@@ -54,8 +55,16 @@ class TerritoryCardFragment : BaseFragment(), LocationListener {
 
     override fun setEvents() {
         setInitialPosition()
+        setMapMarks()
         setLocationUpdates()
         setDirectionsTable()
+    }
+
+    private fun setMapMarks() {
+        if (card.directions.isNotEmpty()) {
+            map!!.overlays.clear()
+            card.directions.forEach { addMarker(it) }
+        }
     }
 
     private fun setDirectionsTable() {
@@ -65,6 +74,7 @@ class TerritoryCardFragment : BaseFragment(), LocationListener {
 
     private fun generatePastButton(): Button {
         var btn = Button(requireActivity())
+        btn.text = "Pegar de la Clipboard"
         btn.setOnClickListener{
             var directions = ArrayList<TerritoryCard.Direction>()
             val item = clipboard.primaryClip?.getItemAt(0)?.text
@@ -77,6 +87,7 @@ class TerritoryCardFragment : BaseFragment(), LocationListener {
                     .split("\n")
 
                 if(lines.size > 2) {
+                    map!!.overlays.clear()
                     val amount = (lines.size + 1) / 2
                     val line2 = lines[1].split(" Nº: ")
                     val neighborhood = line2[0].map {
@@ -88,13 +99,19 @@ class TerritoryCardFragment : BaseFragment(), LocationListener {
                         var lineIndex = i-1
                         var streetName = lines[lineIndex]
                         var numbers = lines[lineIndex+amount-1].split(",").toTypedArray()
-                        var location = locationService.getLocationByAddress(streetName,numbers[0], neighborhood)
-                        directions.add(TerritoryCard.Direction(i-2, streetName, numbers, location.latitude, location.longitude))
-                    }
 
-                    if(directions.isNotEmpty()){
-                        card = TerritoryCard(cardNumber, neighborhood, directions.toTypedArray())
-                        setDirectionsTable()
+                        locationService.getLocationByAddress(streetName,numbers[0], neighborhood.split("-")[0]){ geoPoint ->
+                            var location = geoPoint ?: userLocation
+                            var direction = TerritoryCard.Direction(i-2, streetName, numbers, location.latitude , location.longitude)
+                            directions.add(direction)
+                            addMarker(direction)
+                            if(directions.isNotEmpty()){
+                                directions.sortBy { it.directionNumber }
+                                card = TerritoryCard(cardNumber, neighborhood, directions.toTypedArray())
+                                setDirectionsTable()
+                                centerMapBy(location)
+                            }
+                        }
                     }
                 }
             }
@@ -124,8 +141,9 @@ class TerritoryCardFragment : BaseFragment(), LocationListener {
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0L,0F, this)
         var location = getLastLocation()
         location?.let {
-            centerMapBy(it)
-            addMarker(TerritoryCard.Direction(0,"", arrayOf(),it.latitude,it.longitude), R.mipmap.ic_launcher_round)
+            userLocation = GeoPoint(it.latitude, it.longitude)
+            centerMapBy(userLocation)
+            addMarker(TerritoryCard.Direction(0,"", arrayOf(),it.latitude,it.longitude), R.drawable.ic_add_brother)
         }
     }
 
@@ -142,8 +160,7 @@ class TerritoryCardFragment : BaseFragment(), LocationListener {
         return bestLocation
     }
 
-    private fun centerMapBy(location: Location) {
-        val startPoint = GeoPoint(location.latitude, location.longitude);
+    private fun centerMapBy(startPoint: GeoPoint) {
         map?.controller?.animateTo(startPoint);
     }
 
@@ -158,16 +175,9 @@ class TerritoryCardFragment : BaseFragment(), LocationListener {
     private fun setInitialPosition() {
         val mapController = map?.controller
         mapController?.setZoom(16)
-
-//        val startPoint = GeoPoint(card.directions[0].lat, card.directions[0].long);
-//        mapController?.animateTo(startPoint);
-        if (card.directions.isNotEmpty()) {
-            map!!.overlays.clear()
-            card.directions.forEach { addMarker(it) }
-        }
     }
 
-    private fun addMarker(direction: TerritoryCard.Direction, icon: Int? = null) {
+    private fun addMarker(direction: TerritoryCard.Direction, icon: Int? = R.drawable.ic_house_green) {
         val marker = Marker(map)
         marker.position = GeoPoint(direction.lat, direction.long)
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
@@ -180,7 +190,8 @@ class TerritoryCardFragment : BaseFragment(), LocationListener {
     }
 
     override fun onLocationChanged(location: Location) {
-        centerMapBy(location)
+        userLocation = GeoPoint(location.latitude, location.longitude)
+        centerMapBy(userLocation)
     }
 
     class DirectionTable(parentView: View?,
