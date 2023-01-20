@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.provider.BaseColumns
 import org.cadnusdevs.sandroid.jwcongregationasignment.DateUtils
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.SpeechesArrangement
+import org.cadnusdevs.sandroid.jwcongregationasignment.models.TerritoryCard
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.Weekend
 import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.DatabaseTable.Column
 
@@ -18,9 +19,10 @@ object DbContracts {
     interface EntryWithTable<T>: BaseColumns{
         fun values(entity: T): ContentValues
         fun getInstance() = this
-
         val table: DatabaseTable
     }
+
+
 
     object SpeechesArrangementEntry: EntryWithTable<SpeechesArrangement> {
         const val YEAR = "year"
@@ -126,6 +128,61 @@ object DbContracts {
         }
     }
 
+    object TerritoryCardEntry: EntryWithTable<TerritoryCard> {
+        const val id = BaseColumns._ID
+        const val cardNumber = "card_number"
+        const val neighborhood = "neighborhood"
+
+        override fun values(territoryCard: TerritoryCard) = ContentValues().apply {
+            //// using reflection lib
+//            entity::class.members.forEach {
+//                val reflectionProp = this@TerritoryCardEntry::class.members
+//                    .firstOrNull { x-> x.visibility == KVisibility.PUBLIC && x.name == it.name }
+//                if (reflectionProp != null) {
+//                    val columnName = reflectionProp.call().toString()
+//                    put(columnName, it.call(entity).toString())
+//                }
+//            }
+
+            //// using normal way
+            put(cardNumber, territoryCard.cardNumber)
+            put(neighborhood, territoryCard.neighborhood)
+        }
+
+        override val table = DatabaseTable(
+            TerritoryCard::class.simpleName!!.lowercase(),
+            Column(id, ColumnType.INT_PK),
+            Column(cardNumber),
+            Column(neighborhood)
+        )
+    }
+
+    object TerritoryCardDirectionEntry: EntryWithTable<TerritoryCard.Direction> {
+        private val territoryCardId = "territory_card_id"
+        private val houseNumbers = "house_numbers"
+        private val streetName = "street_name"
+        private val directionNumber = "direction_number"
+        private val id = BaseColumns._ID
+
+        override fun values(direction: TerritoryCard.Direction) =  ContentValues().apply {
+            put(directionNumber, direction.directionNumber)
+            put(streetName, direction.streetName)
+            put(houseNumbers,direction.houseNumbers.joinToString(","))
+            put(territoryCardId,direction.territoryCardId)
+        }
+
+        override val table = DatabaseTable (
+            TerritoryCard.Direction::class.simpleName!!.lowercase(),
+            Column(id, ColumnType.INT_PK),
+            Column(territoryCardId, ColumnType.INT),
+            Column(directionNumber, ColumnType.INT),
+            Column(streetName),
+            Column(houseNumbers)
+        )
+    }
+
+    val territoryCardRelationship = arrayOf(TerritoryCardEntry, TerritoryCardDirectionEntry)
+
     const val CREATE_BROTHER_ENTRY =
         "CREATE TABLE ${BrotherEntry.TABLE_NAME} (" +
             "${BaseColumns._ID} ${ColumnType.INT_PK}," +
@@ -148,8 +205,14 @@ object DbContracts {
             "${MeetingDayEntry.COLUMN_SOUND_SYSTEM_BROTHER_ID} ${ColumnType.INT}," +
             "${MeetingDayEntry.COLUMN_CLEANING_GROUP_ID} ${ColumnType.INT})"
 
+    private val tablesSql = arrayOf(
+        WeekendEntry,
+        SpeechesArrangementEntry,
+        *territoryCardRelationship
+    ).joinToString(" ") { it.table.sqlCreateTable() }
+
     fun sqlCreateAllTables() =
-        "$CREATE_BROTHER_ENTRY $CREATE_MEETING_DAY_ENTRY ${WeekendEntry.table.sqlCreateTable()} ${SpeechesArrangementEntry.table.sqlCreateTable()}"
+        "$CREATE_BROTHER_ENTRY $CREATE_MEETING_DAY_ENTRY $tablesSql"
 
     const val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS ${BrotherEntry.TABLE_NAME}"
 }

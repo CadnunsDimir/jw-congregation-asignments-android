@@ -1,7 +1,11 @@
 package org.cadnusdevs.sandroid.jwcongregationasignment.models
 
-class TerritoryCard (val cardNumber: String,val  neighborhood: String, val directions: Array<Direction> ) {
-    class Direction(val directionNumber: Int, val streetName: String, val houseNumbers: Array<String>, val lat: Double, val long: Double)
+class TerritoryCard (val cardNumber: String,val  neighborhood: String, val directions: Array<Direction>, var id: Long = 0 ) {
+    class Direction(val directionNumber: Int, val streetName: String, val houseNumbers: Array<String>, val lat: Double, val long: Double, var id: Long = 0, var territoryCardId: Long = 0)
+
+    fun updateDirectionsWithCardId() {
+        directions.forEach { it.territoryCardId = id }
+    }
 
     companion object {
         val card703A = TerritoryCard(

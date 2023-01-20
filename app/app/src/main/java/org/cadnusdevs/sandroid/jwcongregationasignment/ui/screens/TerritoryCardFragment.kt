@@ -17,6 +17,8 @@ import androidx.core.content.res.ResourcesCompat
 import org.cadnusdevs.sandroid.jwcongregationasignment.BuildConfig
 import org.cadnusdevs.sandroid.jwcongregationasignment.R
 import org.cadnusdevs.sandroid.jwcongregationasignment.models.TerritoryCard
+import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.DbContracts
+import org.cadnusdevs.sandroid.jwcongregationasignment.repositories.DbContracts.territoryCardRelationship
 import org.cadnusdevs.sandroid.jwcongregationasignment.service.GeoLocationService
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.screens.adapters.BaseTableAdapter
 import org.cadnusdevs.sandroid.jwcongregationasignment.ui.shared.BaseFragment
@@ -41,6 +43,7 @@ class TerritoryCardFragment : BaseFragment(), LocationListener {
     override fun configureLayout(view: View?) {
         setMapView(view)
         setTableView(view)
+        val tableNames = territoryCardRelationship.map { it.table.name }
     }
 
     private fun setTableView(view: View?) {

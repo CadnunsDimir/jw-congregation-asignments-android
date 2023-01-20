@@ -1,7 +1,7 @@
 package org.cadnusdevs.sandroid.jwcongregationasignment.repositories
 
 class DatabaseTable(val name: String, vararg val columns: Column) {
-    class Column(val name: String, val dataTypeAndMetadata: String)
+    class Column(val name: String, val dataTypeAndMetadata: String = DbContracts.ColumnType.STRING)
     class Where(column: String, value: Any){
         var selection = "$column = ?"
         var args = arrayOf(value.toString())

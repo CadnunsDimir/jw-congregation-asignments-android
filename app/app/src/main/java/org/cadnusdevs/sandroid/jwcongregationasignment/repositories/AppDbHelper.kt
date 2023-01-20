@@ -22,7 +22,12 @@ class AppDbHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
         if(needCreateSpeechesEntry(oldVersion,newVersion)){
             db.execSQL(DbContracts.SpeechesArrangementEntry.table.sqlCreateTable())
         }
+        if(needCreateTerritoryEntries(oldVersion,newVersion)){
+            db.execSQL(DbContracts.territoryCardRelationship.joinToString(" ") { it.table.sqlCreateTable() })
+        }
     }
+
+    private fun needCreateTerritoryEntries(oldVersion: Int, newVersion: Int) = oldVersion == 4 && newVersion == 5
 
     private fun needCreateSpeechesEntry(oldVersion: Int, newVersion: Int) =
         oldVersion == 3 && newVersion == 4
@@ -44,6 +49,7 @@ class AppDbHelper (context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
         * 2 = meetings
         * 3 = weekend
         * 4 = SpeechesArrangement
+          5 = Territory Card and Direction
         * */
         const val DATABASE_VERSION = 4
         const val DATABASE_NAME = "JwCongregationAsignments.db"
